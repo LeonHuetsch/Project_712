@@ -48,6 +48,7 @@ if mortOpt == 0
             end
         end        
     end	
+    mPolicyAsset(:,:,2:end) = vGridAsset(mPolicyAsset(:,:,2:end));
     
 else
     inpath = 'Data/';
@@ -92,4 +93,6 @@ else
             end
         end        
     end	
+    mPolicyAsset(:,:,2:end) = vGridAsset(mPolicyAsset(:,:,2:end));
+end
 end

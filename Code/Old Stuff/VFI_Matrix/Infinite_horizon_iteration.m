@@ -1,14 +1,14 @@
 function [mValueFunction,mPolicyAsset,mPolicyCons,mIndexPolicyAsset] = ...
-    Infinite_horizon_iteration(rho,r,alpha,A,depreciation,sigma,vGridAsset,...
+    Infinite_horizon_iteration(rrho,r,aalpha,A,depreciation,ssigma,vGridAsset,...
     vGridShock,mTransitionShock,mValueGuess)
 
 
 % mValueGuess is the inital guess for the value function. Set to zero if
 % there is no initial guess
 
-wage = (1-alpha)*A*(alpha*A/(r+depreciation))^(alpha/(1-alpha));
+wage = (1-aalpha)*A*(aalpha*A/(r+depreciation))^(aalpha/(1-aalpha));
 
-beta = 1/(1+rho);
+bbeta = 1/(1+rrho);
 nGridAsset = length(vGridAsset);
 nGridShock = length(vGridShock);
 
@@ -33,12 +33,12 @@ else
     mValueFunction = mValueGuess;
 end
 
-if sigma == 1
+if ssigma == 1
     bUtility = log(bConsumption);
     while it<=maxit && diff>tol
         bContinuation = repmat(reshape(mTransitionShock*mValueFunction',...
             [1,nGridShock,nGridAsset]),[nGridAsset,1,1]);
-        bValue = bUtility + beta*bContinuation;
+        bValue = (1-bbeta)*bUtility + bbeta*bContinuation;
         bValue(bConsumption<=0) = -1e20;
 
         mHelp=max(bValue,[],3);
@@ -49,11 +49,11 @@ if sigma == 1
     end	
     
 else
-    bUtility = ((bConsumption.^(1-sigma))-1)/(1-sigma);
+    bUtility = ((bConsumption.^(1-ssigma))-1)/(1-ssigma);
     while it<=maxit && diff>tol
         bContinuation = repmat(reshape(mTransitionShock*mValueFunction',...
             [1,nGridShock,nGridAsset]),[nGridAsset,1,1]);
-        bValue = bUtility + beta*bContinuation;
+        bValue = (1-bbeta)*bUtility + bbeta*bContinuation;
         bValue(bConsumption<0) = -1e20;
 
         mHelp=max(bValue,[],3);

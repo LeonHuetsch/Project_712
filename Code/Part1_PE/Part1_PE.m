@@ -1,7 +1,5 @@
 tic;
 
-addpath('VFI_Matrix')
-addpath('VFI_Loops')
 addpath('Functions')
 % Choose productivity A such that deterministic SS capital = 1, then
 % generate Grid for asset holdings a around SS capital.
@@ -14,8 +12,8 @@ rrho = 0.04;
 
 ddelta = 0.65;    % persistence of income shock
 
-nGridAsset = 150;
-nGridShock = 21;
+nGridAsset = 2500;
+nGridShock = 31;
 
 minGridAsset = 0;
 maxGridAsset = 150;
@@ -36,7 +34,7 @@ ssigmaY = 0.2;
 
 optAccelerator = 2;
 [it,mValueFunctionInfLow,mPolicyAssetInfLow,mPolicyConsInfLow] = ...
-    VFI_InfHorizon(rrho,r,ssigma,vGridAsset,vGridShock,mTransitionShock,optAccelerator);
+    VFI_InfHorizon(rrho,r,ssigma,vGridAsset,vGridShock,mTransitionShock,0,optAccelerator);
 
 
 % High Variance
@@ -45,11 +43,11 @@ ssigmaY = 0.4;
 
 optAccelerator = 5;
 [ithigh,mValueFunctionInfHigh,mPolicyAssetInfHigh,mPolicyConsInfHigh] = ...
-    VFI_InfHorizon(rrho,r,ssigma,vGridAsset,vGridShock,mTransitionShock,optAccelerator);
+    VFI_InfHorizon(rrho,r,ssigma,vGridAsset,vGridShock,mTransitionShock,0,optAccelerator);
 
 
 %% Plots Infinite Horizon
-%{
+
 figure;
 hold on
 for i = 1:nGridShock
@@ -85,7 +83,7 @@ hold on
 for i = 1:nGridShock
  plot(mPolicyAssetInfHigh(:,i))
 end
-%}
+
 
 
 %% 5. Finite Horizon
@@ -96,20 +94,16 @@ MortOpt = 0;
 
 % Low Variance
 ssigmaY = 0.2;
-[vGridAsset,vGridShock,mTransitionShock] = SetupGrids(...
-    nGridAsset,minGridAsset,maxGridAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
+[vGridAsset,vGridShock,mTransitionShock] = SetupGrids(nGridAsset,minGridAsset,maxGridAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
 
-[mValueFunctionFiniteLow,mPolicyAssetFiniteLow,mPolicyConsFiniteLow] = ...
-    VFI_FinHorizon(rrho,r,vGridAsset,vGridShock,mTransitionShock,nPeriod,MortOpt);
+[mValueFunctionFiniteLow,mPolicyAssetFiniteLow,mPolicyConsFiniteLow] = VFI_FinHorizon(rrho,r,vGridAsset,vGridShock,mTransitionShock,nPeriod,MortOpt);
 
 
 % High Variance
 ssigmaY = 0.4;
-[vGridAsset,vGridShock,mTransitionShock] = SetupGrids(...
-    nGridAsset,minGridAsset,maxGridAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
+[vGridAsset,vGridShock,mTransitionShock] = SetupGrids(nGridAsset,minGridAsset,maxGridAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
 
-[mValueFunctionFiniteHigh,mPolicyAssetFiniteHigh,mPolicyConsFiniteHigh] = ...
-    VFI_FinHorizon(rrho,r,vGridAsset,vGridShock,mTransitionShock,nPeriod,MortOpt);
+[mValueFunctionFiniteHigh,mPolicyAssetFiniteHigh,mPolicyConsFiniteHigh] = VFI_FinHorizon(rrho,r,vGridAsset,vGridShock,mTransitionShock,nPeriod,MortOpt);
 
 
 
@@ -270,25 +264,25 @@ set(yla,'FontSize',14,'Fontweight','bold');
 
 
 %% 6. Simulation for 60 Periods without Income Data
-%{
+
 % High Variance
-sigmaY = 0.4;
+ssigmaY = 0.4;
 [vGridAsset,vGridShock,mTransitionShock] = SetupGrids(...
-    nGridAsset,minGridAsset,maxGridAsset,nGridShock,sigmaY,delta,logShockAverage,truncOpt);
+    nGridAsset,minGridAsset,maxGridAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
 
 
 nPeriod = 61;
 MortOpt = 0;
 
 [~,mPolicyAsset,mPolicyCons] = ...
-    Finite_horizon_iteration(rho,r,vGridAsset,vGridShock,mTransitionShock,nPeriod,MortOpt);
+    VFI_FinHorizon(rrho,r,vGridAsset,vGridShock,mTransitionShock,nPeriod,MortOpt);
 
 
 nHousehold = 1e03;
 IncomeDataOpt = 0;
 
 [mAsset,mConsumption] = Simulation_FiniteHorizon(mPolicyAsset,...
-    mPolicyCons,vGridAsset,vGridShock,sigmaY,delta,nHousehold,IncomeDataOpt);
+    mPolicyCons,vGridAsset,vGridShock,ssigmaY,ddelta,nHousehold,IncomeDataOpt);
 
 
 vAvgConsPath = mean(mConsumption,2);
@@ -309,29 +303,26 @@ set(xla,'Fontsize',14,'Fontweight','bold');
 set(yla,'FontSize',14,'Fontweight','bold');
 set(le,'FontSize',14,'Fontweight','bold');
 
-%}
+
 
 
 %% 7. Simulation for 60 Periods with Income Data
-%{
+
 % High Variance
-sigmaY = 0.4;
-[vGridAsset,vGridShock,mTransitionShock] = SetupGrids(...
-    nGridAsset,minGridAsset,maxGridAsset,nGridShock,sigmaY,delta,logShockAverage,truncOpt);
+ssigmaY = 0.4;
+[vGridAsset,vGridShock,mTransitionShock] = SetupGrids(nGridAsset,minGridAsset,maxGridAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
 
 
 nPeriod = 61;
 MortOpt = 0;
 
-[~,mPolicyAsset,mPolicyCons] = ...
-    Finite_horizon_iteration(rho,r,vGridAsset,vGridShock,mTransitionShock,nPeriod,MortOpt);
+[~,mPolicyAsset,mPolicyCons] = VFI_FinHorizon(rrho,r,vGridAsset,vGridShock,mTransitionShock,nPeriod,MortOpt);
 
 
 nHousehold = 1e04;
 IncomeDataOpt = 1;
 
-[mAsset,mConsumption] = Simulation_FiniteHorizon(mPolicyAsset,...
-    mPolicyCons,vGridAsset,vGridShock,sigmaY,delta,nHousehold,IncomeDataOpt);
+[mAsset,mConsumption] = Simulation_FiniteHorizon(mPolicyAsset,mPolicyCons,vGridAsset,vGridShock,ssigmaY,ddelta,nHousehold,IncomeDataOpt);
 
 
 vAvgConsPath = mean(mConsumption,2);
@@ -352,29 +343,26 @@ set(xla,'Fontsize',14,'Fontweight','bold');
 set(yla,'FontSize',14,'Fontweight','bold');
 set(le,'FontSize',14,'Fontweight','bold');
 
-%}
+
 
 
 %% 8. Comparison with Empirical Life Cycle Consumption Profile
 %{
 % Model 
-sigmaY = 0.4;
-[vGridAsset,vGridShock,mTransitionShock] = SetupGrids(...
-    nGridAsset,minGridAsset,maxGridAsset,nGridShock,sigmaY,delta,logShockAverage,truncOpt);
+ssigmaY = 0.4;
+[vGridAsset,vGridShock,mTransitionShock] = SetupGrids(nGridAsset,minGridAsset,maxGridAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
 
 
 nPeriod = 61;
 MortOpt = 1;
 
-[~,mPolicyAsset,mPolicyCons] = ...
-    Finite_horizon_iteration(rho,r,vGridAsset,vGridShock,mTransitionShock,nPeriod,MortOpt);
+[~,mPolicyAsset,mPolicyCons] = VFI_FinHorizon(rrho,r,vGridAsset,vGridShock,mTransitionShock,nPeriod,MortOpt);
 
 
 nHousehold = 1e04;
 IncomeDataOpt = 1;
 
-[mAsset,mConsumption] = Simulation_FiniteHorizon(mPolicyAsset,...
-    mPolicyCons,vGridAsset,vGridShock,sigmaY,delta,nHousehold,IncomeDataOpt);
+[mAsset,mConsumption] = Simulation_FiniteHorizon(mPolicyAsset,mPolicyCons,vGridAsset,vGridShock,ssigmaY,ddelta,nHousehold,IncomeDataOpt);
 
 
 vAvgConsPath = mean(mConsumption,2);
@@ -404,8 +392,8 @@ set(tit,'Fontsize',14,'Fontweight','bold');
 set(xla,'Fontsize',14,'Fontweight','bold');
 set(yla,'FontSize',14,'Fontweight','bold');
 set(le,'FontSize',14,'Fontweight','bold');
-
 %}
+
 
 
 %%
