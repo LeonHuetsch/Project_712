@@ -25,7 +25,7 @@ if MortOpt == 0
     for t=2:nPeriod
         bContinuation = repmat(reshape(mTransitionShock*mValueFunction(:,:,t-1)',...
             [1,nGridShock,nGridAsset]),[nGridAsset,1,1]);
-        bValue = (1-beta)*log(bConsumption) + beta*bContinuation;
+        bValue = (1-bbetalog(bConsumption) + beta*bContinuation;
         bValue(bConsumption<0) = -1e20;
 
         [mValueFunction(:,:,t),indexMax] = max(bValue,[],3); 

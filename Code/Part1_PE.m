@@ -14,7 +14,7 @@ rrho = 0.04;
 
 ddelta = 0.65;    % persistence of income shock
 
-nGridAsset = 5000;
+nGridAsset = 150;
 nGridShock = 21;
 
 minGridAsset = 0;
@@ -88,32 +88,33 @@ end
 %}
 
 
-%% 5. Iteration with Finite Horizon
-%{
+%% 5. Finite Horizon
+
 nPeriod = 61;
 MortOpt = 0;
 
 
 % Low Variance
-sigmaY = 0.2;
+ssigmaY = 0.2;
 [vGridAsset,vGridShock,mTransitionShock] = SetupGrids(...
-    nGridAsset,minGridAsset,maxGridAsset,nGridShock,sigmaY,delta,logShockAverage,truncOpt);
+    nGridAsset,minGridAsset,maxGridAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
 
 [mValueFunctionFiniteLow,mPolicyAssetFiniteLow,mPolicyConsFiniteLow] = ...
-    Finite_horizon_iteration(rho,r,vGridAsset,vGridShock,mTransitionShock,nPeriod,MortOpt);
+    VFI_FinHorizon(rrho,r,vGridAsset,vGridShock,mTransitionShock,nPeriod,MortOpt);
 
 
 % High Variance
-sigmaY = 0.4;
+ssigmaY = 0.4;
 [vGridAsset,vGridShock,mTransitionShock] = SetupGrids(...
-    nGridAsset,minGridAsset,maxGridAsset,nGridShock,sigmaY,delta,logShockAverage,truncOpt);
+    nGridAsset,minGridAsset,maxGridAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
 
 [mValueFunctionFiniteHigh,mPolicyAssetFiniteHigh,mPolicyConsFiniteHigh] = ...
-    Finite_horizon_iteration(rho,r,vGridAsset,vGridShock,mTransitionShock,nPeriod,MortOpt);
+    VFI_FinHorizon(rrho,r,vGridAsset,vGridShock,mTransitionShock,nPeriod,MortOpt);
+
 
 
 %% Plots Finite Horizon
-
+%{
 % Compare Policy Consumption for Young and Old
 figure;
 pl=mesh(mPolicyConsFiniteLow(:,:,end));
@@ -264,8 +265,8 @@ set(ax,'FontSize',14,'Fontweight','bold');
 set(tit,'Fontsize',14,'Fontweight','bold');
 set(xla,'Fontsize',14,'Fontweight','bold');
 set(yla,'FontSize',14,'Fontweight','bold');
-
 %}
+
 
 
 %% 6. Simulation for 60 Periods without Income Data
