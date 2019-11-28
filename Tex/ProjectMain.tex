@@ -1,0 +1,108 @@
+\documentclass[letterpaper,12pt]{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb,textcomp, esvect,esint}
+\usepackage{amsthm}
+\usepackage{graphicx,mathtools}
+\usepackage{subcaption}
+\usepackage[onehalfspacing]{setspace}
+\usepackage{subfiles}
+\usepackage{framed}
+
+\usepackage{tocvsec2}
+%\usepackage[bookmarksdepth=subsection]{hyperref}
+\usepackage[hidelinks]{hyperref}
+\usepackage{bookmark}
+\usepackage[margin=1in]{geometry}
+\usepackage{authblk}
+\usepackage{titling}
+\setlength{\droptitle}{-1in}
+
+\usepackage{mathrsfs,comment}
+
+% place figures and tables where it seems like they should be
+\usepackage{float}
+\floatplacement{figure}{H}
+\floatplacement{table}{H}
+\usepackage{color}
+
+\sloppy
+\definecolor{lightgray}{gray}{0.5}
+\setlength{\parindent}{0pt}
+
+% automatically center figures/tables
+\makeatletter
+\g@addto@macro\@floatboxreset{\centering}
+\makeatother
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% NEW COMMANDS
+\newcommand{\bvec}[1]{\ensuremath{\mathbf{#1}}}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{definition}{Definition}
+
+% section heading formatting
+\renewcommand{\thesection}{\arabic{section}.}
+\renewcommand{\thesubsection}{\thesection \arabic{subsection}}
+
+\newenvironment{problem}[2][Problem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+    
+\newenvironment{solution}[2][Solution]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+
+\newenvironment{code}[2][Code]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+
+\usepackage{sectsty}
+\usepackage{titlesec}
+\sectionfont{\centering\fontsize{18pt}{1em}\selectfont}
+\titlespacing*{\section}
+{0pt}{15ex}{12ex}
+\titlespacing*{\subsection}
+{0pt}{10ex}{8ex}
+
+\title{\fontsize{16pt}{1em}\bfseries Econ 712: Term Project}
+\author{Leon Huetsch}
+
+
+\begin{document}
+\maketitle
+Find the Codes for all questions at the end.
+
+\begin{problem}{1}
+Formulate the problem of the agent recursively and derive the stochastic Euler equation.
+\end{problem}
+\begin{solution}{1}
+\begin{framed} 
+Bellman equation:
+\begin{align*}
+v(a,y) &= \max_{(c,a^{\prime})\ge 0} u(c) + \beta \sum_{y^{\prime} \in \mathcal{Y}} \pi \left(y^{\prime} | y \right) v(a^{\prime},y^{\prime}) \\
+&\textit{s.t.} \ \ c + a^{\prime} = y + (1+r)a 
+\end{align*}
+where $\beta = \frac{1}{1+\rho}$ and $y^{\prime}$ follows an AR(1) process given by $\log(y^{\prime}) = \delta \log(y) + \sqrt{1-\delta^2} \varepsilon$ with $\varepsilon \sim N(0,\sigma_Y^2)$. \newline \newline
+Plugging in the budget constraint yields the Bellman equation in one variable only.
+\begin{align}
+v(a,y) &= \max_{a^{\prime}\ge 0} u(y + (1+r)a - a^{\prime}) + \beta \sum_{y^{\prime} \in \mathcal{Y}} \pi \left(y^{\prime} | y \right) v(a^{\prime},y^{\prime})
+\end{align}
+First order condition withr respect to savings $a^{\prime}$ and the Envelope condition yield
+\begin{align*}
+u_c (y + (1+r)a - a^{\prime}) &= \beta \sum_{y^{\prime} \in \mathcal{Y}} \pi \left(y^{\prime} | y \right) v_1 (a^{\prime},y^{\prime}) \\
+v_1 (a,y) &= u_c (y + (1+r)a - a^{\prime}) (1+r)
+\end{align*}
+Combining the two equations at the optimal asset holding decision $a^{\prime} (a,y)$ yields the Euler equation
+\begin{equation}
+u_c (y + (1+r)a - a^{\prime} (a,y)) = \beta \sum_{y^{\prime} \in \mathcal{Y}} \pi \left(y^{\prime} | y \right) u_c \left( y^{\prime} + (1+r) a^{\prime} (a,y) - a^{\prime} (a^{\prime} (a,y),y^{\prime}) \right) (1+r)
+\end{equation}
+
+
+\end{framed}
+\end{solution}
+
+
+
+
+\end{document}
