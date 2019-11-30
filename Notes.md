@@ -15,4 +15,7 @@ Notes
    Solution: Took wrong eigenvector, need to take the one with eigenvalue 1, which for delta=0 is the 2nd not first one!!!
 
 
-7. When persistence delta is low (tried 0 and 0.3) it cannot find the equilibrium r, the difference does no go down anymore ad expected asset holdings seem to jump a lot. WHY?   
+7. When persistence delta is low (tried 0 and 0.3) it cannot find the equilibrium r, the difference does no go down anymore ad expected asset holdings seem to jump a lot. WHY?
+
+
+8. Problems when maxAsset is higher: If 15 it all works and finds GE interest rate for all parameter specifications. When large, e.g. 35, neither fsolve nor fzero can find them for some parameter specifications: particularly for small delta (=0.3). Possible reason: less saving desire means interested rate has to be higher to get people to save and there is a problem with that. Is it becasue r is larger then rho? or initial guess way too small?

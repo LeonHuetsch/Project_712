@@ -3,8 +3,8 @@ tic;
 
 lambda = 0.2;
 
-addpath('VFI_Matrix')
-addpath('Functions')
+%addpath('VFI_Matrix')
+addpath('Part2_GE/Functions')
 if lambda == 0
     outpath ='Output_Part2/Output_UBI/NoTransfer';
 else
@@ -18,17 +18,17 @@ end
 
 %% Parameters for Income Process and Grids
 
-beta = 0.96;
-rho = 1/beta - 1;
-alpha = 0.36;
+bbeta = 0.96;
+rrho = 1/bbeta - 1;
+aalpha = 0.36;
 depreciation = 0.08;
 A = 1;
-kappa = 0;
+kkappa = 0;
 %A = @(r) (r+depreciation)/alpha;
 
-sigma = 1;
-delta = 0.8;  % Persistence of income shock
-sigmaY = 0.4;   % Variance of income shock    
+ssigma = 1;
+ddelta = 0.8;  % Persistence of income shock
+ssigmaY = 0.4;   % Variance of income shock    
 
 nGridAsset = 100;   % Gridsize assets
 nGridShock = 21;    % Gridsize income process
@@ -41,8 +41,8 @@ truncOpt = 0;
 
 
 
-capitalDemand = @(r) (alpha*A/(r+depreciation))^(1/(1-alpha));
-wage = @(r) (1-alpha)*A*(alpha*A/(r+depreciation))^(alpha/(1-alpha));
+capitalDemand = @(r) (aalpha*A/(r+depreciation))^(1/(1-aalpha));
+wage = @(r) (1-aalpha)*A*(aalpha*A/(r+depreciation))^(aalpha/(1-aalpha));
 
 
 
@@ -57,18 +57,24 @@ vCapitalDemand = zeros(nInterest,1);
 vExpectedAssetNext = zeros(nInterest,1);
 %tauHelp = 0;
 lambdaHelp = 0.2;
-kappa = 0.638486722667860;
+kkappa = 0.638486722667860;
 tauHelp = 0.192680040644605;
 
 [vGridAsset,vGridShock,mTransitionShock] = SetupGrids(...
-    nGridAsset,minGridAsset,maxGridAsset,nGridShock,sigmaY,delta,logShockAverage,truncOpt);
-
+    nGridAsset,minGridAsset,maxGridAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
+tic
+[it,mValueFunction1,mPolicyAsset1,mPolicyCons1,mPolicyLabor1] = ...
+    VFI_InfHorizon_UBI(tauHelp,kkappa,lambdaHelp,rrho,vGridInterest(5),ssigma,aalpha,A,depreciation,vGridAsset,vGridShock,mTransitionShock,0,1);
+toc
+tic
+[mValueFunction,mPolicyAsset,mPolicyCons,mIndexPolicyAsset,mPolicyLabor] = VFiteration_UBI(tauHelp,lambdaHelp,kkappa,rrho,vGridInterest(5),...
+        aalpha,A,depreciation,ssigma,vGridAsset,vGridShock,mTransitionShock,0);
+toc    
 for i=1:nInterest
-    [mValueFunction,mPolicyAsset,~,~,~] = VFiteration_UBI(tauHelp,lambdaHelp,kappa,rho,vGridInterest(i),...
-        alpha,A,depreciation,sigma,vGridAsset,vGridShock,mTransitionShock,0);
+    [mValueFunction,mPolicyAsset,~,mIndexPolicyAsset,~] = VFiteration_UBI(tauHelp,lambdaHelp,kkappa,rrho,vGridInterest(i),...
+        aalpha,A,depreciation,ssigma,vGridAsset,vGridShock,mTransitionShock,0);
 
-    [~,vExpectedAssetNext(i)] = StationaryDist(vGridAsset,nGridShock,...
-    mTransitionShock,mPolicyAsset);
+    [~,vExpectedAssetNext(i)] = StationaryDist(vGridAsset,nGridShock,mTransitionShock,mIndexPolicyAsset);
     vCapitalDemand(i) = capitalDemand(vGridInterest(i));
 end
 
@@ -84,7 +90,7 @@ set(ax,'FontSize',14,'Fontweight','bold');
 set(tit,'Fontsize',14,'Fontweight','bold');
 set(xla,'Fontsize',14,'Fontweight','bold');
 set(le,'Fontsize',12,'Fontweight','bold');
-print('-depsc', [outpath,'Capital_AssetHoldings','.eps']);
+%print('-depsc', [outpath,'Capital_AssetHoldings','.eps']);
 %{
 subplot(2,1,2)
 plot(vGridInterest,vCapitalDemand-vExpectedAssetNext,'Linewidth',2);
@@ -103,7 +109,7 @@ set(xla,'Fontsize',14,'Fontweight','bold');
 %% Find RCE interest rate, disutility value kappa and tax rate tau
 
 EqConditions = @(EqParameters) sum(ConditionsGE(nGridAsset,minGridAsset,maxGridAsset,...
-    nGridShock,sigmaY,delta,logShockAverage,truncOpt,rho,alpha,A,depreciation,sigma,...
+    nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt,rrho,aalpha,A,depreciation,ssigma,...
     mValueFunction,lambda,EqParameters(1),EqParameters(2),EqParameters(3)).^2);
 
 
@@ -142,10 +148,10 @@ EqTau = EqParameters(3);
 %% Calculate Stationary Distribution in RCE
 
 [vGridAsset,vGridShock,mTransitionShock] = SetupGrids(...
-    nGridAsset,minGridAsset,maxGridAsset,nGridShock,sigmaY,delta,logShockAverage,truncOpt);
+    nGridAsset,minGridAsset,maxGridAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
 toc
 [mValueFunction,mPolicyAsset,mPolicyCons,~,mPolicyLabor] = ...
-    VFiteration_UBI(EqTau,lambda,EqKappa,rho,EqInterestRate,alpha,A,depreciation,sigma,...
+    VFiteration_UBI(EqTau,lambda,EqKappa,rrho,EqInterestRate,aalpha,A,depreciation,ssigma,...
     vGridAsset,vGridShock,mTransitionShock,0);
 toc
 [mStationaryDist,expectAssetHoldings] = StationaryDist...
@@ -159,9 +165,9 @@ toc
 % Table for macroeconomic aggregates
 effectiveLaborSup = sum(sum(mStationaryDist.*mPolicyLabor.*...
     repmat(reshape(vGridShock,[1,nGridShock]),[nGridAsset,1])));
-EqCapital = (alpha*A/(EqInterestRate+depreciation))^(1/(1-alpha))*effectiveLaborSup;
+EqCapital = (aalpha*A/(EqInterestRate+depreciation))^(1/(1-aalpha))*effectiveLaborSup;
 EqtotalCons = sum(sum(mPolicyCons.*mStationaryDist));
-EqtotalOutput = A*EqCapital^alpha;
+EqtotalOutput = A*EqCapital^aalpha;
 EqWage = wage(EqInterestRate);
 
 VarNames = {'Output','Capital','Consumption','Wage','Interest_Rate'};
@@ -205,7 +211,7 @@ set(ax,'FontSize',14,'Fontweight','bold');
 set(tit,'Fontsize',14,'Fontweight','bold');
 set(xla,'Fontsize',14,'Fontweight','bold');
 set(yla,'Fontsize',14,'Fontweight','bold');
-print('-depsc', [outpath,'StationaryDist','.eps']);
+%print('-depsc', [outpath,'StationaryDist','.eps']);
 
 figure;
 pl=plot(vGridAsset,mPolicyAsset(:,end));
@@ -218,7 +224,7 @@ set(ax,'FontSize',14,'Fontweight','bold');
 set(tit,'Fontsize',14,'Fontweight','bold');
 set(xla,'Fontsize',14,'Fontweight','bold');
 set(yla,'Fontsize',14,'Fontweight','bold');
-print('-depsc', [outpath,'Policy_func_assets','.eps']);
+%print('-depsc', [outpath,'Policy_func_assets','.eps']);
 
 
 
