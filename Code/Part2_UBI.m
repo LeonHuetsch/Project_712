@@ -1,11 +1,11 @@
 tic;
 
 
-lambda = 0.2;
+llambda = 0.2;
 
 %addpath('VFI_Matrix')
 addpath('Part2_GE/Functions')
-if lambda == 0
+if llambda == 0
     outpath ='Output_Part2/Output_UBI/NoTransfer';
 else
     outpath ='Output_Part2/Output_UBI/Transfer';
@@ -30,11 +30,11 @@ ssigma = 1;
 ddelta = 0.8;  % Persistence of income shock
 ssigmaY = 0.4;   % Variance of income shock    
 
-nGridAsset = 100;   % Gridsize assets
+nGridAsset = 200;   % Gridsize assets
 nGridShock = 21;    % Gridsize income process
 
-minGridAsset = 0;   % smallest asset grid point
-maxGridAsset = 25;  % largest asset grid point
+minAsset = 0;   % smallest asset grid point
+maxAsset = 30;  % largest asset grid point
 
 logShockAverage = 0; 
 truncOpt = 0;
@@ -48,7 +48,7 @@ wage = @(r) (1-aalpha)*A*(aalpha*A/(r+depreciation))^(aalpha/(1-aalpha));
 
 
 %% Plot Capital vs Asset Holdings for different r
-
+%{
 nInterest = 5;
 %vGridInterest = linspace(-depreciation+1e-08,rho-1e-08,nInterest);
 %vGridInterest = linspace(-depreciation+0.15,0.039,nInterest);
@@ -59,17 +59,11 @@ vExpectedAssetNext = zeros(nInterest,1);
 lambdaHelp = 0.2;
 kkappa = 0.638486722667860;
 tauHelp = 0.192680040644605;
+%tauHelp = 0;
 
 [vGridAsset,vGridShock,mTransitionShock] = SetupGrids(...
-    nGridAsset,minGridAsset,maxGridAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
-tic
-[it,mValueFunction1,mPolicyAsset1,mPolicyCons1,mPolicyLabor1] = ...
-    VFI_InfHorizon_UBI(tauHelp,kkappa,lambdaHelp,rrho,vGridInterest(5),ssigma,aalpha,A,depreciation,vGridAsset,vGridShock,mTransitionShock,0,1);
-toc
-tic
-[mValueFunction,mPolicyAsset,mPolicyCons,mIndexPolicyAsset,mPolicyLabor] = VFiteration_UBI(tauHelp,lambdaHelp,kkappa,rrho,vGridInterest(5),...
-        aalpha,A,depreciation,ssigma,vGridAsset,vGridShock,mTransitionShock,0);
-toc    
+    nGridAsset,minAsset,maxAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
+
 for i=1:nInterest
     [mValueFunction,mPolicyAsset,~,mIndexPolicyAsset,~] = VFiteration_UBI(tauHelp,lambdaHelp,kkappa,rrho,vGridInterest(i),...
         aalpha,A,depreciation,ssigma,vGridAsset,vGridShock,mTransitionShock,0);
@@ -102,18 +96,131 @@ set(tit,'Fontsize',14,'Fontweight','bold');
 set(xla,'Fontsize',14,'Fontweight','bold');
 %print('-depsc', [outpath,'diff(r)','.eps']);
 %}
+%}
 
 
 
+%% Stationary equilibrium without UBI: tau=lambda=0, kappa equilibirum object such that working population of 80 percent
 
-%% Find RCE interest rate, disutility value kappa and tax rate tau
+tic
+[vGridAsset,vGridShock,mTransitionShock] = SetupGrids(nGridAsset,minAsset,maxAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
 
-EqConditions = @(EqParameters) sum(ConditionsGE(nGridAsset,minGridAsset,maxGridAsset,...
+llambda_noUBI = 0;
+ttau_noUBI = 0;
+EqConditions_noUBI = @(EqParameters) sum(ConditionsGE(nGridAsset,minAsset,maxAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt,rrho,aalpha,A,depreciation,ssigma,0,llambda_noUBI,EqParameters(1),EqParameters(2),ttau_noUBI).^2);
+
+vInitialGuess = [0.035 0.6];
+options = optimset('fminsearch');
+options.Display = 'final';
+options.TolFun = 1e-06;
+options.TolX = 1e-06;
+
+[EqParameters_noUBI,diff_noUBI] = fminsearch(EqConditions_noUBI,vInitialGuess,options);
+toc
+
+r_noUBI = EqParameters_noUBI(1);
+kkappa_noUBI = EqParameters_noUBI(2);
+
+% Corresponding stationary distribution
+[mValueFunction_noUBI,mPolicyAsset_noUBI,mPolicyCons_noUBI,mIndexPolicyAsset_noUBI,mPolicyLabor_noUBI] = ...
+    VFiteration_UBI(ttau_noUBI,llambda_noUBI,kkappa_noUBI,rrho,r_noUBI,aalpha,A,depreciation,ssigma,...
+    vGridAsset,vGridShock,mTransitionShock,0);
+[mStationaryDist_noUBI,expectAssetHoldings_noUBI] = StationaryDist...
+    (vGridAsset,nGridShock,mTransitionShock,mIndexPolicyAsset_noUBI);
+
+
+%% Output and Plots for results without UBI
+
+% Table for macroeconomic aggregates
+effectiveLaborSup_noUBI = sum(sum(mStationaryDist_noUBI.*mPolicyLabor_noUBI.*repmat(reshape(vGridShock,[1,nGridShock]),[nGridAsset,1])));
+capital_noUBI = (aalpha*A/(r_noUBI+depreciation))^(1/(1-aalpha))*effectiveLaborSup_noUBI;
+totalCons_noUBI = sum(sum(mPolicyCons_noUBI.*mStationaryDist_noUBI));
+totalOutput_noUBI = A*capital_noUBI^aalpha;
+wage_noUBI = wage(r_noUBI);
+
+VarNames = {'Output','Capital','Consumption','Wage','Interest_Rate'};
+TransferPolicy = {'No_UBI'};
+
+Summary_noUBI = table(totalOutput_noUBI,capital_noUBI,totalCons_noUBI,wage_noUBI,r_noUBI);
+Summary_noUBI.Properties.RowNames = TransferPolicy;
+Summary_noUBI.Properties.VariableNames = VarNames;
+disp(Summary_noUBI);
+
+
+% Table for equilibrium conditions
+workingShare_noUBI = sum(sum(mStationaryDist_noUBI.*mPolicyLabor_noUBI));
+
+CapitalMarket_noUBI = table(expectAssetHoldings_noUBI,capital_noUBI,capital_noUBI-expectAssetHoldings_noUBI);
+CapitalMarket_noUBI.Properties.RowNames = {'Capital_Market'};
+CapitalMarket_noUBI.Properties.VariableNames = {'Ea','K','difference'};
+disp(CapitalMarket_noUBI);
+
+WorkingShare_noUBI = table(workingShare_noUBI,0.8,workingShare_noUBI-0.8);
+WorkingShare_noUBI.Properties.RowNames = {'Working_Share'};
+WorkingShare_noUBI.Properties.VariableNames = {'Working_Share','Target','difference'};
+disp(WorkingShare_noUBI);
+
+
+figure;
+pl=mesh(mStationaryDist_noUBI);
+xla=xlabel('income shock');
+yla=ylabel('asset holdings');
+tit=title('Stationary Distribution without UBI');
+ax=gca;
+set(pl,'Linewidth',2);
+set(ax,'FontSize',14,'Fontweight','bold');
+set(tit,'Fontsize',14,'Fontweight','bold');
+set(xla,'Fontsize',14,'Fontweight','bold');
+set(yla,'Fontsize',14,'Fontweight','bold');
+%print('-depsc', [outpath,'StationaryDist','.eps']);
+
+figure;
+pl=plot(vGridAsset,mPolicyAsset_noUBI(:,end));
+xla=xlabel('asset holdings');
+yla=ylabel('savings');
+tit=title('Policy Function for highest income realization without UBI');
+ax=gca;
+set(pl,'Linewidth',2);
+set(ax,'FontSize',14,'Fontweight','bold');
+set(tit,'Fontsize',14,'Fontweight','bold');
+set(xla,'Fontsize',14,'Fontweight','bold');
+set(yla,'Fontsize',14,'Fontweight','bold');
+%print('-depsc', [outpath,'Policy_func_assets','.eps']);
+
+
+%% Stationary distribution for Andrew Young's proposal: lambda=0.2, tau equilibrium object
+
+% Note: kappa is taken from the previous section
+tic
+kkappa = kkappa_noUBI;
+llambda_UBI = 0.2;
+
+EqConditions_UBI = @(EqParameters) sum(ConditionsGE(nGridAsset,minAsset,maxAsset,...
     nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt,rrho,aalpha,A,depreciation,ssigma,...
-    mValueFunction,lambda,EqParameters(1),EqParameters(2),EqParameters(3)).^2);
+    0,llambda_UBI,EqParameters(1),kkappa,EqParameters(2)).^2);
 
 
+vInitialGuess = [0.035 0.1];
+options = optimset('fminsearch');
+options.Display = 'final';
+options.TolFun = 1e-06;
+options.TolX = 1e-06;
 
+[EqParameters_UBI,diff_UBI] = fminsearch(EqConditions_UBI,vInitialGuess,options);%,options);
+toc
+
+r_UBI = EqParameters_UBI(1);
+ttau_UBI = EqParameters_UBI(2);
+
+% Corresponding stationary distribution
+[mValueFunction_UBI,mPolicyAsset_UBI,mPolicyCons_UBI,mIndexPolicyAsset_UBI,mPolicyLabor_UBI] = ...
+    VFiteration_UBI(ttau_UBI,llambda_UBI,kkappa,rrho,r_UBI,aalpha,A,depreciation,ssigma,...
+    vGridAsset,vGridShock,mTransitionShock,0);
+[mStationaryDist_UBI,expectAssetHoldings_UBI] = StationaryDist...
+    (vGridAsset,nGridShock,mTransitionShock,mIndexPolicyAsset_UBI);
+
+
+%{
 %[~,Index] = min(abs(vCapitalDemand-vExpectedAssetNext));
 %r0 = vGridInterest(Index);
 r0 = 0.037146725946504;
@@ -141,17 +248,84 @@ options.TolX = 1e-06;
 EqInterestRate = EqParameters(1);
 EqKappa = EqParameters(2);
 EqTau = EqParameters(3);
+%}
 
 
+
+%% Output and Plots for results with UBI
+
+% Table for macroeconomic aggregates
+effectiveLaborSup_UBI = sum(sum(mStationaryDist_UBI.*mPolicyLabor_UBI.*...
+    repmat(reshape(vGridShock,[1,nGridShock]),[nGridAsset,1])));
+capital_UBI = (aalpha*A/(r_UBI+depreciation))^(1/(1-aalpha))*effectiveLaborSup_UBI;
+totalCons_UBI = sum(sum(mPolicyCons_UBI.*mStationaryDist_UBI));
+totalOutput_UBI = A*capital_UBI^aalpha;
+wage_UBI = wage(r_UBI);
+
+VarNames = {'Output','Capital','Consumption','Wage','Interest_Rate'};
+TransferPolicy = {'UBI'};
+
+Summary_UBI = table(totalOutput_UBI,capital_UBI,totalCons_UBI,wage_UBI,r_UBI);
+Summary_UBI.Properties.RowNames = TransferPolicy;
+Summary_UBI.Properties.VariableNames = VarNames;
+disp(Summary_UBI);
+
+
+% Table for equilibrium conditions
+workingShare_UBI = sum(sum(mStationaryDist_UBI.*mPolicyLabor_UBI));
+govtRevenue_UBI = ttau_UBI*wage_UBI*(sum(sum(mStationaryDist_UBI.*(mPolicyLabor_UBI.*...
+    repmat(reshape(vGridShock,[1,nGridShock]),[nGridAsset,1])))));
+
+CapitalMarket_UBI = table(expectAssetHoldings_UBI,capital_UBI,capital_UBI-expectAssetHoldings_UBI);
+CapitalMarket_UBI.Properties.RowNames = {'Capital_Market'};
+CapitalMarket_UBI.Properties.VariableNames = {'Ea','K','difference'};
+disp(CapitalMarket_UBI);
+
+WorkingShare_UBI = table(workingShare_UBI,0.8,workingShare_UBI-0.8);
+WorkingShare_UBI.Properties.RowNames = {'Working_Share'};
+WorkingShare_UBI.Properties.VariableNames = {'Working_Share','Target','difference'};
+disp(WorkingShare_UBI);
+
+UBI = table(govtRevenue_UBI,llambda_UBI,govtRevenue_UBI-llambda_UBI);
+UBI.Properties.RowNames = {'UBI_Transfer'};
+UBI.Properties.VariableNames = {'Govt_Revenue','UBI_Lambda','difference'};
+disp(UBI);
+
+
+figure;
+pl=mesh(mStationaryDist_UBI);
+xla=xlabel('income shock');
+yla=ylabel('asset holdings');
+tit=title('Stationary Distribution with UBI');
+ax=gca;
+set(pl,'Linewidth',2);
+set(ax,'FontSize',14,'Fontweight','bold');
+set(tit,'Fontsize',14,'Fontweight','bold');
+set(xla,'Fontsize',14,'Fontweight','bold');
+set(yla,'Fontsize',14,'Fontweight','bold');
+%print('-depsc', [outpath,'StationaryDist','.eps']);
+
+figure;
+pl=plot(vGridAsset,mPolicyAsset_UBI(:,end));
+xla=xlabel('asset holdings');
+yla=ylabel('savings');
+tit=title('Policy Function for highest income realization with UBI');
+ax=gca;
+set(pl,'Linewidth',2);
+set(ax,'FontSize',14,'Fontweight','bold');
+set(tit,'Fontsize',14,'Fontweight','bold');
+set(xla,'Fontsize',14,'Fontweight','bold');
+set(yla,'Fontsize',14,'Fontweight','bold');
+%print('-depsc', [outpath,'Policy_func_assets','.eps']);
 
 
 %% Calculate Stationary Distribution in RCE
-
+%{
 [vGridAsset,vGridShock,mTransitionShock] = SetupGrids(...
-    nGridAsset,minGridAsset,maxGridAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
+    nGridAsset,minAsset,maxAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
 toc
 [mValueFunction,mPolicyAsset,mPolicyCons,~,mPolicyLabor] = ...
-    VFiteration_UBI(EqTau,lambda,EqKappa,rrho,EqInterestRate,aalpha,A,depreciation,ssigma,...
+    VFiteration_UBI(EqTau,llambda,EqKappa,rrho,EqInterestRate,aalpha,A,depreciation,ssigma,...
     vGridAsset,vGridShock,mTransitionShock,0);
 toc
 [mStationaryDist,expectAssetHoldings] = StationaryDist...
@@ -163,38 +337,38 @@ toc
 %% Output and Plots
 
 % Table for macroeconomic aggregates
-effectiveLaborSup = sum(sum(mStationaryDist.*mPolicyLabor.*...
+effectiveLaborSup_UBI = sum(sum(mStationaryDist.*mPolicyLabor.*...
     repmat(reshape(vGridShock,[1,nGridShock]),[nGridAsset,1])));
-EqCapital = (aalpha*A/(EqInterestRate+depreciation))^(1/(1-aalpha))*effectiveLaborSup;
-EqtotalCons = sum(sum(mPolicyCons.*mStationaryDist));
-EqtotalOutput = A*EqCapital^aalpha;
-EqWage = wage(EqInterestRate);
+capital_UBI = (aalpha*A/(EqInterestRate+depreciation))^(1/(1-aalpha))*effectiveLaborSup_UBI;
+totalCons_UBI = sum(sum(mPolicyCons.*mStationaryDist));
+totalOutput_UBI = A*capital_UBI^aalpha;
+wage_UBI = wage(EqInterestRate);
 
 VarNames = {'Output','Capital','Consumption','Wage','Interest_Rate'};
-TransferPolicies = {'lambda = 0'};
+TransferPolicy = {'lambda = 0'};
 
-Summary = table(EqtotalOutput,EqCapital,EqtotalCons,EqWage,EqInterestRate);
-Summary.Properties.RowNames = TransferPolicies;
-Summary.Properties.VariableNames = VarNames;
-disp(Summary);
+Summary_UBI = table(totalOutput_UBI,capital_UBI,totalCons_UBI,wage_UBI,EqInterestRate);
+Summary_UBI.Properties.RowNames = TransferPolicy;
+Summary_UBI.Properties.VariableNames = VarNames;
+disp(Summary_UBI);
 
 
 % Table for equilibrium conditions
-workingShare = sum(sum(mStationaryDist.*mPolicyLabor));
-govtRevenue = EqTau*EqWage*(sum(sum(mStationaryDist.*(mPolicyLabor.*...
+workingShare_UBI = sum(sum(mStationaryDist.*mPolicyLabor));
+govtRevenue_UBI = EqTau*wage_UBI*(sum(sum(mStationaryDist.*(mPolicyLabor.*...
     repmat(reshape(vGridShock,[1,nGridShock]),[nGridAsset,1])))));
 
-CapitalMarket = table(expectAssetHoldings,EqCapital,EqCapital-expectAssetHoldings);
-CapitalMarket.Properties.RowNames = {'CapitalMarket'};
-CapitalMarket.Properties.VariableNames = {'Ea','K','difference'};
-disp(CapitalMarket);
+CapitalMarket_UBI = table(expectAssetHoldings,capital_UBI,capital_UBI-expectAssetHoldings);
+CapitalMarket_UBI.Properties.RowNames = {'CapitalMarket'};
+CapitalMarket_UBI.Properties.VariableNames = {'Ea','K','difference'};
+disp(CapitalMarket_UBI);
 
-WorkingShare = table(workingShare,0.8,workingShare-0.8);
-WorkingShare.Properties.RowNames = {'WorkingShare'};
-WorkingShare.Properties.VariableNames = {'WorkingShare','Target','difference'};
-disp(WorkingShare);
+WorkingShare_UBI = table(workingShare_UBI,0.8,workingShare_UBI-0.8);
+WorkingShare_UBI.Properties.RowNames = {'WorkingShare'};
+WorkingShare_UBI.Properties.VariableNames = {'WorkingShare','Target','difference'};
+disp(WorkingShare_UBI);
 
-UBI = table(govtRevenue,lambda,govtRevenue-lambda);
+UBI = table(govtRevenue_UBI,llambda,govtRevenue_UBI-llambda);
 UBI.Properties.RowNames = {'UBI_Transfer'};
 UBI.Properties.VariableNames = {'Govt_Revenue','UBI_Lambda','difference'};
 disp(UBI);
@@ -225,7 +399,7 @@ set(tit,'Fontsize',14,'Fontweight','bold');
 set(xla,'Fontsize',14,'Fontweight','bold');
 set(yla,'Fontsize',14,'Fontweight','bold');
 %print('-depsc', [outpath,'Policy_func_assets','.eps']);
-
+%}
 
 
 toc;

@@ -1,5 +1,5 @@
 function [mValueFunction,mPolicyAsset,mPolicyCons,mIndexPolicyAsset,mPolicyLabor] = ...
-    VFiteration_UBI(tau,lambda,kappa,rho,r,alpha,A,depreciation,sigma,vGridAsset,...
+    VFiteration_UBI(ttau,llambda,kkappa,rrho,r,alpha,A,depreciation,ssigma,vGridAsset,...
     vGridShock,mTransitionShock,mValueGuess)
 
 
@@ -8,7 +8,7 @@ function [mValueFunction,mPolicyAsset,mPolicyCons,mIndexPolicyAsset,mPolicyLabor
 nGridLabor = 2;
 wage = (1-alpha)*A*(alpha*A/(r+depreciation))^(alpha/(1-alpha));
 
-beta = 1/(1+rho);
+beta = 1/(1+rrho);
 nGridAsset = length(vGridAsset);
 nGridShock = length(vGridShock);
 
@@ -48,8 +48,8 @@ while nGridAssetIter<nGridAsset
     bLaborToday = zeros(nGridAssetIter,nGridShock,nGridAssetIter*nGridLabor);
     bLaborToday(:,:,1:nGridAssetIter) = 1;
 
-    bConsumption = (1-tau)*wage*bShockToday.*bLaborToday + (1+r)*bAssetToday...
-        - bAssetNext + lambda;
+    bConsumption = (1-ttau)*wage*bShockToday.*bLaborToday + (1+r)*bAssetToday...
+        - bAssetNext + llambda;
 
     bConsumption(bConsumption<=0) = 0;
 
@@ -64,8 +64,8 @@ while nGridAssetIter<nGridAsset
     %    mValueFunction = mValueGuess;
     %end
 
-    if sigma == 1
-        bUtility = log(bConsumption) - kappa*bLaborToday;
+    if ssigma == 1
+        bUtility = log(bConsumption) - kkappa*bLaborToday;
         while it<=maxit && diff>tol
             bContinuation = repmat(reshape(mTransitionShock*mValueFunction',...
                 [1,nGridShock,nGridAssetIter]),[nGridAssetIter,1,nGridLabor]);
@@ -80,7 +80,7 @@ while nGridAssetIter<nGridAsset
         end	
 
     else
-        bUtility = ((bConsumption.^(1-sigma))-1)/(1-sigma) - kappa*bLaborToday;
+        bUtility = ((bConsumption.^(1-ssigma))-1)/(1-ssigma) - kkappa*bLaborToday;
         while it<=maxit && diff>tol
             bContinuation = repmat(reshape(mTransitionShock*mValueFunction',...
                 [1,nGridShock,nGridAssetIter]),[nGridAssetIter,1,nGridLabor]);
@@ -104,7 +104,7 @@ mPolicyAsset=vGridAsset(mIndexPolicyAsset);
 
 mPolicyLabor=mIndexPolicy<=nGridAssetIter;
 
-mPolicyCons = (1-tau)*wage*bShockToday(:,:,1).*mPolicyLabor + (1+r)*bAssetToday(:,:,1)...
-        - mPolicyAsset + lambda;
+mPolicyCons = (1-ttau)*wage*bShockToday(:,:,1).*mPolicyLabor + (1+r)*bAssetToday(:,:,1)...
+        - mPolicyAsset + llambda;
 
 end
