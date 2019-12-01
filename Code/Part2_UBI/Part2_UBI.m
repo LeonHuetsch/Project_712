@@ -31,7 +31,7 @@ truncOpt = 0;           % truncation of normal distribution for shocks (0 is no 
 
 
 
-capitalDemand = @(r) (aalpha*A/(r+depr))^(1/(1-aalpha));
+capitalDemand = @(r,laborSupply) (aalpha*A/(r+depr))^(1/(1-aalpha))*laborSupply;
 wage = @(r) (1-aalpha)*A*(aalpha*A/(r+depr))^(aalpha/(1-aalpha));
 
 
@@ -56,11 +56,13 @@ mGuessVF = 0;           % initial guess for value function
 [vGridAsset,vGridShock,mTransitionShock] = SetupGrids(nGridAsset,minAsset,maxAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
 
 for rr=1:nInterest
-    [mValueFunction,~,~,mIndexPolicyAsset,~]...
+    [mValueFunction,~,~,mIndexPolicyAsset,mPolicyLabor]...
         = MultigridVFI_UBI(ttau,kkappa,llambda,rrho,vGridInterest(rr),ssigma,aalpha,A,depr,minAsset,maxAsset,mTransitionShock,vGridShock,vMultiSteps,mGuessVF,optAccelerator);
 
-    [~,vSavings(rr)] = StationaryDist(vGridAsset,nGridShock,mTransitionShock,mIndexPolicyAsset);
-    vCapitalDemand(rr) = capitalDemand(vGridInterest(rr));
+    [mStationaryDist,vSavings(rr)] = StationaryDist(vGridAsset,nGridShock,mTransitionShock,mIndexPolicyAsset);
+    effectLaborSupply = (sum(sum(mStationaryDist.*(mPolicyLabor.*repmat(reshape(vGridShock,[1,nGridShock]),[nGridAsset,1])))));
+
+    vCapitalDemand(rr) = capitalDemand(vGridInterest(rr),effectLaborSupply);
 end
 
 
@@ -232,8 +234,7 @@ ttau_UBI = EqParameters_UBI(2);
 %% Output and Plots for results with UBI
 
 % Table for macroeconomic aggregates
-effectiveLaborSup_UBI = sum(sum(mStationaryDist_UBI.*mPolicyLabor_UBI.*...
-    repmat(reshape(vGridShock,[1,nGridShock]),[nGridAsset,1])));
+effectiveLaborSup_UBI = sum(sum(mStationaryDist_UBI.*mPolicyLabor_UBI.*repmat(reshape(vGridShock,[1,nGridShock]),[nGridAsset,1])));
 capital_UBI = (aalpha*A/(r_UBI+depr))^(1/(1-aalpha))*effectiveLaborSup_UBI;
 totalCons_UBI = sum(sum(mPolicyCons_UBI.*mStationaryDist_UBI));
 totalOutput_UBI = A*capital_UBI^aalpha;
