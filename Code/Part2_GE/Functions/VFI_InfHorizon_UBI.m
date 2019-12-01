@@ -1,4 +1,4 @@
-function [it,mValueFunction1,mPolicyAsset1,mPolicyCons1,mPolicyLabor1] = ...
+function [mValueFunction,mPolicyAsset,mPolicyCons,mPolicyLabor] = ...
     VFI_InfHorizon_UBI(tau,kappa,lambda,rrho,r,ssigma,aalpha,A,depreciation,vGridAsset,vGridShock,mTransitionShock,mValueGuess,optAccelerator)
 
 
@@ -13,19 +13,19 @@ diff = 100;
 it = 0;
 
 if mValueGuess == 0
-    mValueFunction1 = zeros(nGridAsset,nGridShock);
+    mValueFunction = zeros(nGridAsset,nGridShock);
 else
-    mValueFunction1 = mValueGuess;
+    mValueFunction = mValueGuess;
 end
-mPolicyAsset1 = zeros(nGridAsset,nGridShock);
-mPolicyCons1 = zeros(nGridAsset,nGridShock);
-mPolicyLabor1 = zeros(nGridAsset,nGridShock);
+mPolicyAsset = zeros(nGridAsset,nGridShock);
+mPolicyCons = zeros(nGridAsset,nGridShock);
+mPolicyLabor = zeros(nGridAsset,nGridShock);
 mHelp = zeros(nGridAsset,nGridShock);
 
 if ssigma == 1
     while it<=maxit && diff>tol
         it=it+1;
-        mContValue = mValueFunction1*mTransitionShock';
+        mContValue = mValueFunction*mTransitionShock';
 
         for shockIndex=1:nGridShock
             shockToday = vGridShock(shockIndex);
@@ -75,24 +75,24 @@ if ssigma == 1
                         end
                     end
                     mHelp(assetTodayIndex,shockIndex) = valuePrev;
-                    mPolicyAsset1(assetTodayIndex,shockIndex) = assetChoice; 
-                    mPolicyCons1(assetTodayIndex,shockIndex) = consChoice;
-                    mPolicyLabor1(assetTodayIndex,shockIndex) = laborChoice;
+                    mPolicyAsset(assetTodayIndex,shockIndex) = assetChoice; 
+                    mPolicyCons(assetTodayIndex,shockIndex) = consChoice;
+                    mPolicyLabor(assetTodayIndex,shockIndex) = laborChoice;
                 else
-                    mHelp(assetTodayIndex,shockIndex) = (log(mPolicyCons1(assetTodayIndex,shockIndex))-kappa*mPolicyLabor1(assetTodayIndex,shockIndex))...
-                        + bbeta*mContValue(mPolicyAsset1(assetTodayIndex,shockIndex),shockIndex);            
+                    mHelp(assetTodayIndex,shockIndex) = (log(mPolicyCons(assetTodayIndex,shockIndex))-kappa*mPolicyLabor(assetTodayIndex,shockIndex))...
+                        + bbeta*mContValue(mPolicyAsset(assetTodayIndex,shockIndex),shockIndex);            
                 end
             end
         end
-        diff=max(max(abs(mHelp-mValueFunction1)));
-        mValueFunction1 = mHelp;        
+        diff=max(max(abs(mHelp-mValueFunction)));
+        mValueFunction = mHelp;        
     end		
     %mPolicyAsset = vGridAsset(mPolicyAsset);
     
 else 
     while it<=maxit && diff>tol
         it=it+1;
-        mContValue = mValueFunction1*mTransitionShock';
+        mContValue = mValueFunction*mTransitionShock';
 
         for shockIndex=1:nGridShock
             shockToday = vGridShock(shockIndex);
@@ -125,16 +125,16 @@ else
                         end
                     end
                     mHelp(assetTodayIndex,shockIndex)=valuePrev;
-                    mPolicyAsset1(assetTodayIndex,shockIndex)=assetChoice; 
-                    mPolicyCons1(assetTodayIndex,shockIndex) = consChoice;
+                    mPolicyAsset(assetTodayIndex,shockIndex)=assetChoice; 
+                    mPolicyCons(assetTodayIndex,shockIndex) = consChoice;
                 else
-                    mHelp(assetTodayIndex,shockIndex) = (1-bbeta)*(mPolicyCons1(assetTodayIndex,shockIndex)^(1-ssigma)-1)/(1-ssigma)...
-                        + bbeta*mContValue(mPolicyAsset1(assetTodayIndex,shockIndex),shockIndex);
+                    mHelp(assetTodayIndex,shockIndex) = (1-bbeta)*(mPolicyCons(assetTodayIndex,shockIndex)^(1-ssigma)-1)/(1-ssigma)...
+                        + bbeta*mContValue(mPolicyAsset(assetTodayIndex,shockIndex),shockIndex);
                 end
             end
         end
-        diff=max(max(abs(mHelp-mValueFunction1)));
-        mValueFunction1 = mHelp;        
+        diff=max(max(abs(mHelp-mValueFunction)));
+        mValueFunction = mHelp;        
     end	
     %mPolicyAsset = vGridAsset(mPolicyAsset);
 end

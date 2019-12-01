@@ -1,4 +1,4 @@
-function [mValueFunction,mPolicyAsset,mPolicyCons,mPolicyAssetIndex,mPolicyLabor] = VFiteration_UBI(ttau,llambda,kkappa,rrho,r,alpha,A,depreciation,ssigma,vGridAsset,vGridShock,mTransitionShock,mValueGuess,optAccelerator)
+function [mValueFunction,mPolicyAsset,mPolicyCons,mPolicyAssetIndex,mPolicyLabor] = VFI_UBI(ttau,kkappa,llambda,rrho,r,ssigma,alpha,A,depreciation,vGridAsset,vGridShock,mTransitionShock,mValueGuess,optAccelerator)
 
 
 % mValueGuess is the inital guess for the value function. Set to zero if

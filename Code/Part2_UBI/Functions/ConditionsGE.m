@@ -13,15 +13,13 @@ wage = (1-aalpha)*A*(aalpha*A/(r+depreciation))^(aalpha/(1-aalpha));
 %% Savings
 [vGridAsset,vGridShock,mTransitionShock] = SetupGrids(nGridAsset,minAsset,maxAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
 
-[~,~,~,mIndexPolicyAsset,mPolicyLabor]....
-    = MultigridVFI_UBI(ttau,kkappa,llambda,rrho,r,ssigma,aalpha,A,depreciation,minAsset,maxAsset,mTransitionShock,vGridShock,vMultiSteps,mValueGuess,optAccelerator);
+[~,~,~,mIndexPolicyAsset,mPolicyLabor] = MultigridVFI_UBI(ttau,kkappa,llambda,rrho,r,ssigma,aalpha,A,depreciation,minAsset,maxAsset,mTransitionShock,vGridShock,vMultiSteps,mValueGuess,optAccelerator);
 
 [mStationaryDist,expectAssetHoldings] = StationaryDist(vGridAsset,nGridShock,mTransitionShock,mIndexPolicyAsset);
 
 
 %% Capital demand 
-effectiveLaborSup = sum(sum(mStationaryDist.*mPolicyLabor.*...
-    repmat(reshape(vGridShock,[1,nGridShock]),[nGridAsset,1])));
+effectiveLaborSup = sum(sum(mStationaryDist.*mPolicyLabor.*repmat(reshape(vGridShock,[1,nGridShock]),[nGridAsset,1])));
 capitalDemand = (aalpha*A/(r+depreciation))^(1/(1-aalpha))*effectiveLaborSup;
 
 
