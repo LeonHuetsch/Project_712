@@ -37,10 +37,11 @@ diff = 100;
 it = 0;
 
 if ssigma == 1
-    bUtility = log(bConsumption) - kkappa*bLaborToday;
+    bUtility = (1-bbeta)*(log(bConsumption) - kkappa*bLaborToday);
     while it<=maxit && diff>tol
         it=it+1;
         if mod(it,optAccelerator)==0 || it==1
+            
             bContinuation = repmat(reshape(mTransitionShock*mValueFunction',...
                 [1,nGridShock,nGridAsset]),[nGridAsset,1,nGridLabor]);
             bValue = bUtility + bbeta*bContinuation;
@@ -48,21 +49,19 @@ if ssigma == 1
 
             [mHelp,mPolicyIndex] = max(bValue,[],3);
 
-            %diff=max(max(abs(mHelp-mValueFunction)));    
-            %mValueFunction=mHelp;   
-            
             mPolicyAssetIndex = rem(mPolicyIndex,nGridAsset);
             mPolicyAssetIndex(mPolicyAssetIndex==0)=nGridAsset;
             mPolicyAsset=vGridAsset(mPolicyAssetIndex);
             mPolicyLabor=mPolicyIndex<=nGridAsset;
             mPolicyCons = (1-ttau)*wage*bShockToday(:,:,1).*mPolicyLabor + (1+r)*bAssetToday(:,:,1)...
                 - mPolicyAsset + llambda;
+            
         else
             mContValue = mValueFunction*mTransitionShock'; 
             for shockIndex=1:nGridShock
                 for assetTodayIndex=1:nGridAsset
                     
-                    mHelp(assetTodayIndex,shockIndex) = (log(mPolicyCons(assetTodayIndex,shockIndex))-kkappa*mPolicyLabor(assetTodayIndex,shockIndex))...
+                    mHelp(assetTodayIndex,shockIndex) = (1-bbeta)*(log(mPolicyCons(assetTodayIndex,shockIndex))-kkappa*mPolicyLabor(assetTodayIndex,shockIndex))...
                         + bbeta*mContValue(mPolicyAssetIndex(assetTodayIndex,shockIndex),shockIndex);          
                 end
             end
@@ -72,18 +71,38 @@ if ssigma == 1
     end	
 
 else
-    bUtility = ((bConsumption.^(1-ssigma))-1)/(1-ssigma) - kkappa*bLaborToday;
+    bUtility = (1-bbeta)*(((bConsumption.^(1-ssigma))-1)/(1-ssigma) - kkappa*bLaborToday);
     while it<=maxit && diff>tol
-        bContinuation = repmat(reshape(mTransitionShock*mValueFunction',...
-            [1,nGridShock,nGridAsset]),[nGridAsset,1,nGridLabor]);
-        bValue = bUtility + bbeta*bContinuation;
-        bValue(bConsumption<0) = -1e20;
+        it = it+1;
+        if mod(it,optAccelerator)==0 || it==1
+            
+            bContinuation = repmat(reshape(mTransitionShock*mValueFunction',...
+                [1,nGridShock,nGridAsset]),[nGridAsset,1,nGridLabor]);
+            bValue = bUtility + bbeta*bContinuation;
+            bValue(bConsumption<0) = -1e20;
 
-        mHelp=max(bValue,[],3);
+            [mHelp,mPolicyIndex] = max(bValue,[],3);
+            
+            mPolicyAssetIndex = rem(mPolicyIndex,nGridAsset);
+            mPolicyAssetIndex(mPolicyAssetIndex==0)=nGridAsset;
+            mPolicyAsset=vGridAsset(mPolicyAssetIndex);
+            mPolicyLabor=mPolicyIndex<=nGridAsset;
+            mPolicyCons = (1-ttau)*wage*bShockToday(:,:,1).*mPolicyLabor + (1+r)*bAssetToday(:,:,1)...
+                - mPolicyAsset + llambda;
+            
+        else
+            mContValue = mValueFunction*mTransitionShock'; 
+            for shockIndex=1:nGridShock
+                for assetTodayIndex=1:nGridAsset
+                    
+                    mHelp(assetTodayIndex,shockIndex) = (1-bbeta)*((mPolicyCons(assetTodayIndex,shockIndex).^(1-ssigma)-1)/(1-ssigma)-kkappa*mPolicyLabor(assetTodayIndex,shockIndex))...
+                        + bbeta*mContValue(mPolicyAssetIndex(assetTodayIndex,shockIndex),shockIndex);          
+                end
+            end
+        end
 
         diff=max(max(abs(mHelp-mValueFunction)));    
         mValueFunction=mHelp;   
-        it=it+1;
     end	    
 end
 

@@ -97,9 +97,6 @@ print('-depsc', [outpath,'Capital_MarketClearing','.eps']);
 
 %% Stationary equilibrium without UBI: tau=lambda=0, kappa equilibirum object such that working population of 80 percent
 
-
-[vGridAsset,vGridShock,mTransitionShock] = SetupGrids(nGridAsset,minAsset,maxAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
-
 llambda_noUBI = 0;
 ttau_noUBI = 0;
 
@@ -122,6 +119,8 @@ kkappa_noUBI = EqParameters_noUBI(2);
 
 
 % Corresponding stationary distribution
+[vGridAsset,vGridShock,mTransitionShock] = SetupGrids(nGridAsset,minAsset,maxAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
+
 [mValueFunction_noUBI,mPolicyAsset_noUBI,mPolicyCons_noUBI,mIndexPolicyAsset_noUBI,mPolicyLabor_noUBI] = ...
     MultigridVFI_UBI(ttau_noUBI,kkappa_noUBI,llambda_noUBI,rrho,r_noUBI,ssigma,aalpha,A,depr,minAsset,maxAsset,mTransitionShock,vGridShock,vMultiSteps,mGuessVF,optAccelerator);
 

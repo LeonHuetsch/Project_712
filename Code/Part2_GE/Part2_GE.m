@@ -25,7 +25,7 @@ nGridShock = 21;
 vMultiSteps = [50,150,500];
 
 minAsset = 0;
-maxAsset = 15;
+maxAsset = 50;
 
 logShockAverage = 0;
 truncOpt = 0;
@@ -186,7 +186,7 @@ parfor sy=1:length(vSsigmaY)
     bExitFlag(:,:,sy)=mExitFlagHelp;
 end
 toc
-%{
+
 %% Save Data
 
 vRowNames={'0.3','0.6','0.9'};
@@ -208,10 +208,9 @@ disp(InterestRatesTable1)
 disp(InterestRatesTable2)
 
 
-dlmwrite('bDifference.txt',bDifference,'delimiter','\t','newline','pc');
-dlmwrite('bInterestRate.txt',bInterestRate,'delimiter','\t','newline','unix');
-dlmwrite('bExitFlag.txt',bExitFlag,'delimiter','\t','newline','pc');
-%}
+dlmwrite([outpath,'bDifference.txt'],bDifference,'delimiter','\t','newline','pc');
+dlmwrite([outpath,'bInterestRate.txt'],bInterestRate,'delimiter','\t','newline','unix');
+dlmwrite([outpath,'bExitFlag.txt'],bExitFlag,'delimiter','\t','newline','pc');
 
-%toc;
-%beep;
+
+beep;

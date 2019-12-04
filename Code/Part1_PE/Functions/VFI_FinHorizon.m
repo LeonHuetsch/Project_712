@@ -18,20 +18,25 @@ if mortOpt == 0
         for shockIndex=1:nGridShock
             shockToday = vGridShock(shockIndex);
             assetChoicePrev=1;
+            
+            %if t==2
+            %    [~,assetChoicePrev] = min(abs(vGridAsset));
+            %end
 
             for assetTodayIndex=1:nGridAsset
                 assetToday = vGridAsset(assetTodayIndex);
-                valuePrev = -1000;
+                valuePrev = -10000;
                 assetChoice = 1;
-
+                %consChoice = -1000;
+                
                 for assetNextIndex=assetChoicePrev:nGridAsset
                     assetNext = vGridAsset(assetNextIndex);
 
                     cons = shockToday + (1+r)*assetToday - assetNext;
                     if cons<=0.0 
-                        value=-1000;
+                        value = -10000;
                     else
-                        value=(1-bbeta)*log(cons) + bbeta*mContValue(assetNextIndex,shockIndex); 
+                        value = (1-bbeta)*log(cons) + bbeta*mContValue(assetNextIndex,shockIndex); 
                     end
                     if value>=valuePrev
                         valuePrev = value;
@@ -41,10 +46,24 @@ if mortOpt == 0
                     else      
                         break
                     end
-                    mValueFunction(assetTodayIndex,shockIndex,t) = valuePrev;
-                    mPolicyAsset(assetTodayIndex,shockIndex,t) = assetChoice; 
-                    mPolicyCons(assetTodayIndex,shockIndex,t) = consChoice;
                 end
+                mValueFunction(assetTodayIndex,shockIndex,t) = valuePrev;
+                mPolicyAsset(assetTodayIndex,shockIndex,t) = assetChoice; 
+                mPolicyCons(assetTodayIndex,shockIndex,t) = consChoice;
+                %{
+                if t==2
+                    cons = shockToday + (1+r)*assetToday - min(abs(vGridAsset));
+                    if cons<=0.0 
+                        value = -inf;
+                    else
+                        value = (1-bbeta)*log(cons); 
+                    end
+                    [~,assetChoice] = min(abs(vGridAsset));
+                    mValueFunction(assetTodayIndex,shockIndex,t) = value;
+                    mPolicyAsset(assetTodayIndex,shockIndex,t) = assetChoice; 
+                    mPolicyCons(assetTodayIndex,shockIndex,t) = cons;  
+                end
+                %} 
             end
         end        
     end	

@@ -22,3 +22,6 @@ Notes
 
 
 9. Any interest rate here is net of depreciation: so r = r1 - depreciation, where r1 is the real net interest rate. Write in PDF!!!
+
+
+10. Consumption function looks convex in question 1 of PE because maxAsset is too low, thus they need to consume if more saving is impossible.

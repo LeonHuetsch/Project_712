@@ -7,6 +7,7 @@ function [mAsset,mConsumption] = Simulation_FiniteHorizon(mPolicyAsset,...
 
 
 if IncomeDataOpt == 0
+    
     % Make 3rd dimension go from young to old
     mPolicyCons = mPolicyCons(:,:,end:-1:1);
     mPolicyAsset = mPolicyAsset(:,:,end:-1:1);
@@ -18,15 +19,16 @@ if IncomeDataOpt == 0
     rng(1)
     shockDraws = normrnd(0,sigmaY,[nPeriod,nHousehold]);
 
-    mIncome = zeros(nPeriod,nHousehold);
-    mLogIncome = zeros(nPeriod,nHousehold);
-    mLogIncome(1,:) = vGridLogShock((nGridShock+1)/2);
-    %mLogIncome(1,:) = vGridLogShock(20);
+    mIncome = zeros(nPeriod,nHousehold);                % Income matrix
+    mLogIncome = zeros(nPeriod,nHousehold);             % Log income matrix
+    %mLogIncome(1,:) = vGridLogShock((nGridShock+1)/2);  % Start of with medium income
+    mLogIncome(1,:) = vGridLogShock(1);
     mIncome(1,:) = exp(mLogIncome(1,:));
 
     mConsumption = zeros(nPeriod,nHousehold);
+    [~,indz] = min(abs(vGridAsset));
     mAsset = zeros(nPeriod,nHousehold);
-    %mAsset(1,:) = vGridAsset(nGridAsset/2);
+    mAsset(1,:) = vGridAsset(indz+1);
 
     for hh=1:nHousehold    
         for t=2:nPeriod

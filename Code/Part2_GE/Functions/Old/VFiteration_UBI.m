@@ -1,10 +1,10 @@
-function [mValueFunction,mPolicyAsset,mPolicyCons,mPolicyAssetIndex,mPolicyLabor] = VFI_UBI(ttau,kkappa,llambda,rrho,r,ssigma,aalpha,A,depreciation,vGridAsset,vGridShock,mTransitionShock,mValueGuess,optAccelerator)
+function [mValueFunction,mPolicyAsset,mPolicyCons,mPolicyAssetIndex,mPolicyLabor] = VFiteration_UBI(ttau,llambda,kkappa,rrho,r,alpha,A,depreciation,ssigma,vGridAsset,vGridShock,mTransitionShock,mValueGuess,optAccelerator)
 
 
 % mValueGuess is the inital guess for the value function. Set to zero if
 % there is no initial guess. 
 nGridLabor = 2;
-wage = (1-aalpha)*A*(aalpha*A/(r+depreciation))^(aalpha/(1-aalpha));
+wage = (1-alpha)*A*(alpha*A/(r+depreciation))^(alpha/(1-alpha));
 
 bbeta = 1/(1+rrho);
 nGridAsset = length(vGridAsset);
@@ -32,7 +32,7 @@ bConsumption(bConsumption<=0) = 0;
 
 
 maxit = 1e04;
-tol = 1e-6;
+tol = 1e-7;
 diff = 100;
 it = 0;
 
@@ -48,7 +48,7 @@ if ssigma == 1
             bValue(bConsumption<=0) = -1e20;
 
             [mHelp,mPolicyIndex] = max(bValue,[],3);
-            
+
             mPolicyAssetIndex = rem(mPolicyIndex,nGridAsset);
             mPolicyAssetIndex(mPolicyAssetIndex==0)=nGridAsset;
             mPolicyAsset=vGridAsset(mPolicyAssetIndex);
@@ -103,7 +103,8 @@ else
 
         diff=max(max(abs(mHelp-mValueFunction)));    
         mValueFunction=mHelp;   
-    end
+        it=it+1;
+    end	    
 end
 
 [~,mPolicyIndex]=max(bValue,[],3);

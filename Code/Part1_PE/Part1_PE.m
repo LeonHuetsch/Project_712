@@ -1,53 +1,119 @@
-tic;
+%%  Housekeeping
 
+close all
+outpath = '/Users/Leon/Desktop/PhD-Studies/2nd_Year/Courses/Macro_HetHH/Project/Tex/Figures/Part1_PE/';
+%outpath ='Output/';
 addpath('Functions')
+
 % Choose productivity A such that deterministic SS capital = 1, then
 % generate Grid for asset holdings a around SS capital.
 
 
 %% Parameters for Income Process and Grids
 
-r= 0.02;
-rrho = 0.04;
-
-ddelta = 0.65;    % persistence of income shock
-
-nGridAsset = 2500;
+nGridAsset = 5000;
 nGridShock = 31;
 
 minGridAsset = 0;
-maxGridAsset = 150;
-
-logShockAverage = 1.5;
-truncOpt = 0;
+%maxGridAsset = 500;     
 
 
 %% 4. Infinite Horizon
 
-r= 0.02;
-rrho = 0.04;
+logShockAverage = 1.5;
+truncOpt = 0;       % Trunctation of normal distribution shock in AR(1) of income process    
+
 ssigma = 1;
+ddelta = 0.8;      % persistence of income shock
+rrho = 0.04;
+r= 0.02;
+
 
 % Low Variance
 ssigmaY = 0.2;
-[vGridAsset,vGridShock,mTransitionShock] = SetupGrids(nGridAsset,minGridAsset,maxGridAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
+maxGridAsset = 1000; 
+[vGridAssetLow,vGridShockLow,mTransitionShock] = SetupGrids(nGridAsset,minGridAsset,maxGridAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
 
-optAccelerator = 2;
+optAccelerator = 2; % Accelerator for VFI, only maximize every two iterations
 [it,mValueFunctionInfLow,mPolicyAssetInfLow,mPolicyConsInfLow] = ...
-    VFI_InfHorizon(rrho,r,ssigma,vGridAsset,vGridShock,mTransitionShock,0,optAccelerator);
+    VFI_InfHorizon(rrho,r,ssigma,vGridAssetLow,vGridShockLow,mTransitionShock,0,optAccelerator);
 
 
 % High Variance
 ssigmaY = 0.4;
-[vGridAsset,vGridShock,mTransitionShock] = SetupGrids(nGridAsset,minGridAsset,maxGridAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
+maxGridAsset = 1000; 
+[vGridAssetHigh,vGridShockHigh,mTransitionShock] = SetupGrids(nGridAsset,minGridAsset,maxGridAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
 
 optAccelerator = 5;
 [ithigh,mValueFunctionInfHigh,mPolicyAssetInfHigh,mPolicyConsInfHigh] = ...
-    VFI_InfHorizon(rrho,r,ssigma,vGridAsset,vGridShock,mTransitionShock,0,optAccelerator);
+    VFI_InfHorizon(rrho,r,ssigma,vGridAssetHigh,vGridShockHigh,mTransitionShock,0,optAccelerator);
 
 
-%% Plots Infinite Horizon
+% Plots Infinite Horizon
 
+figure(1)
+plot(vGridAssetLow,mPolicyConsInfLow(:,1),vGridAssetLow,mPolicyConsInfLow(:,(nGridShock+1)/2),vGridAssetLow,mPolicyConsInfLow(:,end),'Linewidth',1.5);
+xlabel('assets');
+ylabel('consumption');
+legend('z_{low}','z_{avg}','z_{high}');
+set(gca,'FontSize',13,'Fontweight','bold');
+%print('-depsc', [outpath,'consFunc_inf_low','.eps']);
+print('-dpng', [outpath,'consFunc_inf_low','.png']);
+
+
+figure(2)
+plot(vGridAssetHigh,mPolicyConsInfHigh(:,1),vGridAssetHigh,mPolicyConsInfHigh(:,(nGridShock+1)/2),vGridAssetHigh,mPolicyConsInfHigh(:,end),'Linewidth',1.5);
+xlabel('assets');
+ylabel('consumption');
+legend('z_{low}','z_{avg}','z_{high}');
+set(gca,'FontSize',13,'Fontweight','bold');
+%print('-depsc', [outpath,'consFunc_inf_high','.eps']);
+print('-dpng', [outpath,'consFunc_inf_high','.png']);
+
+%{
+mConsShareLow = mPolicyConsInfLow./(mPolicyConsInfLow+mPolicyAssetInfLow);
+mConsShareHigh = mPolicyConsInfHigh./(mPolicyConsInfHigh+mPolicyAssetInfHigh);
+
+figure(3)
+plot(vGridAssetLow,mConsShareLow(:,1)-mConsShareHigh(:,1),'Linewidth',1.0);
+xlabel('assets');
+ylabel('consumption');
+legend('z_{low }');
+set(gca,'FontSize',13,'Fontweight','bold');
+%print('-depsc', [outpath,'consFunc_inf_high','.eps']);
+print('-dpng', [outpath,'consFunc_inf_comp1','.png']);
+
+figure(4)
+plot(vGridAssetLow,mConsShareLow(:,end)-mConsShareHigh(:,end),'Linewidth',1.0);
+xlabel('assets');
+ylabel('consumption');
+legend('z_{high}');
+set(gca,'FontSize',13,'Fontweight','bold');
+%print('-depsc', [outpath,'consFunc_inf_high','.eps']);
+print('-dpng', [outpath,'consFunc_inf_comp2','.png']);
+
+
+figure(5)
+plot(vGridAssetLow,mPolicyAssetInfLow(:,1),vGridAssetLow,mPolicyAssetInfLow(:,(nGridShock+1)/2),vGridAssetLow,mPolicyAssetInfLow(:,end),'Linewidth',1.5);
+xlabel('assets');
+ylabel('savings');
+legend('z_{low}','z_{avg}','z_{high}');
+set(gca,'FontSize',13,'Fontweight','bold');
+%print('-depsc', [outpath,'assetFunc_inf_low','.eps']);
+print('-dpng', [outpath,'assetFunc_inf_low','.png']);
+
+
+figure(6)
+plot(vGridAssetHigh,mPolicyAssetInfHigh(:,1),vGridAssetHigh,mPolicyAssetInfHigh(:,(nGridShock+1)/2),vGridAssetHigh,mPolicyAssetInfHigh(:,end),'Linewidth',1.5);
+xlabel('assets');
+ylabel('savings');
+legend('z_{low}','z_{avg}','z_{high}');
+set(gca,'FontSize',13,'Fontweight','bold');
+%print('-depsc', [outpath,'assetFunc_inf_high','.eps']);
+print('-dpng', [outpath,'assetFunc_inf_high','.png']);
+%}
+
+%{
 figure;
 hold on
 for i = 1:nGridShock
@@ -83,7 +149,7 @@ hold on
 for i = 1:nGridShock
  plot(mPolicyAssetInfHigh(:,i))
 end
-
+%}
 
 
 %% 5. Finite Horizon
@@ -94,22 +160,56 @@ MortOpt = 0;
 
 % Low Variance
 ssigmaY = 0.2;
-[vGridAsset,vGridShock,mTransitionShock] = SetupGrids(nGridAsset,minGridAsset,maxGridAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
+maxGridAsset = 100; 
+[vGridAsset,vGridShockLow,mTransitionShock] = SetupGrids(nGridAsset,minGridAsset,maxGridAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
 
-[mValueFunctionFiniteLow,mPolicyAssetFiniteLow,mPolicyConsFiniteLow] = VFI_FinHorizon(rrho,r,vGridAsset,vGridShock,mTransitionShock,nPeriod,MortOpt);
+[mValueFunctionFiniteLow,mPolicyAssetFiniteLow,mPolicyConsFiniteLow] = VFI_FinHorizon(rrho,r,vGridAsset,vGridShockLow,mTransitionShock,nPeriod,MortOpt);
 
 
 % High Variance
 ssigmaY = 0.4;
-[vGridAsset,vGridShock,mTransitionShock] = SetupGrids(nGridAsset,minGridAsset,maxGridAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
+maxGridAsset = 100; 
+[vGridAsset,vGridShockHigh,mTransitionShock] = SetupGrids(nGridAsset,minGridAsset,maxGridAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
 
-[mValueFunctionFiniteHigh,mPolicyAssetFiniteHigh,mPolicyConsFiniteHigh] = VFI_FinHorizon(rrho,r,vGridAsset,vGridShock,mTransitionShock,nPeriod,MortOpt);
+[mValueFunctionFiniteHigh,mPolicyAssetFiniteHigh,mPolicyConsFiniteHigh] = VFI_FinHorizon(rrho,r,vGridAsset,vGridShockHigh,mTransitionShock,nPeriod,MortOpt);
+
+F1 = griddedInterpolant(repmat(vGridAsset',[1,nGridShock]),repmat(vGridShockLow,[nGridAsset,1]),mPolicyConsFiniteLow(:,:,end));
+F2 = griddedInterpolant(repmat(vGridAsset',[1,nGridShock]),repmat(vGridShockHigh,[nGridAsset,1]),mPolicyConsFiniteHigh(:,:,end));
 
 
+% Plots Finite Horizon
 
-%% Plots Finite Horizon
+% Consumption function for young and old agents with medium income
+figure(1)
+plot(vGridAsset,mPolicyConsFiniteLow(:,(nGridShock+1)/2,end),vGridAsset,mPolicyConsFiniteLow(:,(nGridShock+1)/2,25),'Linewidth',1.5);
+xlabel('assets');
+ylabel('consumption');
+legend('young','old');
+set(gca,'FontSize',13,'Fontweight','bold');
+%print('-depsc', [outpath,'consFunc_inf_low','.eps']);
+print('-dpng', [outpath,'consFunc_fin_low','.png']);
+
+
+figure(2)
+plot(vGridAsset,mPolicyConsFiniteHigh(:,(nGridShock+1)/2,end),vGridAsset,mPolicyConsFiniteHigh(:,(nGridShock+1)/2,25),'Linewidth',1.5);
+xlabel('assets');
+ylabel('consumption');
+legend('young','old');
+set(gca,'FontSize',13,'Fontweight','bold');
+%print('-depsc', [outpath,'consFunc_inf_low','.eps']);
+print('-dpng', [outpath,'consFunc_fin_high','.png']);
+
 %{
-% Compare Policy Consumption for Young and Old
+figure(3)
+plot(vGridAsset,F1(vGridAsset',6*ones(1,nGridAsset)'),vGridAsset,F2(vGridAsset',6*ones(1,nGridAsset)'),'Linewidth',1.5);
+xlabel('assets');
+ylabel('consumption');
+legend('z_{low}','z_{high}');
+set(gca,'FontSize',13,'Fontweight','bold');
+%print('-depsc', [outpath,'consFunc_inf_low','.eps']);
+print('-dpng', [outpath,'consFunc_fin_comp','.png']);
+
+
 figure;
 pl=mesh(mPolicyConsFiniteLow(:,:,end));
 xla=xlabel('Shock Today');
@@ -266,7 +366,9 @@ set(yla,'FontSize',14,'Fontweight','bold');
 %% 6. Simulation for 60 Periods without Income Data
 
 % High Variance
-ssigmaY = 0.4;
+ssigmaY = 0.2;
+minGridAsset = 0;
+maxGridAsset = 100; 
 [vGridAsset,vGridShock,mTransitionShock] = SetupGrids(...
     nGridAsset,minGridAsset,maxGridAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
 
@@ -274,15 +376,13 @@ ssigmaY = 0.4;
 nPeriod = 61;
 MortOpt = 0;
 
-[~,mPolicyAsset,mPolicyCons] = ...
-    VFI_FinHorizon(rrho,r,vGridAsset,vGridShock,mTransitionShock,nPeriod,MortOpt);
+[mValueFunction,mPolicyAsset,mPolicyCons] = VFI_FinHorizon(rrho,r,vGridAsset,vGridShock,mTransitionShock,nPeriod,MortOpt);
 
 
 nHousehold = 1e03;
 IncomeDataOpt = 0;
 
-[mAsset,mConsumption] = Simulation_FiniteHorizon(mPolicyAsset,...
-    mPolicyCons,vGridAsset,vGridShock,ssigmaY,ddelta,nHousehold,IncomeDataOpt);
+[mAsset,mConsumption] = Simulation_FiniteHorizon(mPolicyAsset,mPolicyCons,vGridAsset,vGridShock,ssigmaY,ddelta,nHousehold,IncomeDataOpt);
 
 
 vAvgConsPath = mean(mConsumption,2);

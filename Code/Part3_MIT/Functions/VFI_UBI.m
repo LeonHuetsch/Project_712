@@ -32,7 +32,7 @@ bConsumption(bConsumption<=0) = 0;
 
 
 maxit = 1e04;
-tol = 1e-6;
+tol = 1e-7;
 diff = 100;
 it = 0;
 
