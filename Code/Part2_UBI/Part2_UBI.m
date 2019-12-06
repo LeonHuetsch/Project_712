@@ -16,15 +16,15 @@ depr = 0.08;            % depreciation
 A = 1;                  % productivity parameter in Cobb-Douglas production function
 %A = @(r) (r+depreciation)/alpha;
 
-ssigma = 1;             % risk aversion parameter households
-ddelta = 0.8;           % persistence of income shock
+ssigma = 3;             % risk aversion parameter households
+ddelta = 0.9;           % persistence of income shock
 ssigmaY = 0.2;          % variance of income shock    
 
-nGridAsset = 500;       % gridsize assets
+nGridAsset = 1500;       % gridsize assets
 nGridShock = 15;        % gridsize income process
 
 minAsset = 0;           % smallest asset grid point
-maxAsset = 100;          % largest asset grid point
+maxAsset = 150;          % largest asset grid point
 
 logShockAverage = 0;    % average shock in logs
 truncOpt = 0;           % truncation of normal distribution for shocks (0 is no truncation)
@@ -101,8 +101,8 @@ llambda_noUBI = 0;
 ttau_noUBI = 0;
 
 mGuessVF = 0; 
-vMultiSteps = [80 500];
-optAccelerator = 35;    
+vMultiSteps = [50,350,1500];
+optAccelerator = 15;    
     
 EqConditions_noUBI = @(EqParameters) sum(ConditionsGE(nGridAsset,minAsset,maxAsset,vMultiSteps,nGridShock,ssigmaY,ddelta,...
     logShockAverage,truncOpt,rrho,aalpha,A,depr,ssigma,mGuessVF,llambda_noUBI,EqParameters(1),EqParameters(2),ttau_noUBI,optAccelerator).^2);
@@ -207,8 +207,8 @@ print('-dpng', [outpath,'Polfun_assets_noUBI','.png']);
 kkappa = kkappa_noUBI;
 llambda_UBI = 0.2;
 
-vMultiSteps = [80 500];
-optAccelerator = 35;
+vMultiSteps = [50,350,1500];
+optAccelerator = 15;
 
 EqConditions_UBI = @(EqParameters) sum(ConditionsGE(nGridAsset,minAsset,maxAsset,vMultiSteps,nGridShock,ssigmaY,ddelta,...
     logShockAverage,truncOpt,rrho,aalpha,A,depr,ssigma,mGuessVF,llambda_UBI,EqParameters(1),kkappa,EqParameters(2),optAccelerator).^2);
@@ -302,6 +302,7 @@ print('-dpng', [outpath,'Polfun_assets_UBI','.png']);
 
 
 
+
 % Comparison UBI to no UBi
 WorkingShare_UBI = table(workingShare_UBI,0.8,workingShare_UBI-0.8);
 WorkingShare_UBI.Properties.RowNames = {'Working_Share'};
@@ -311,27 +312,57 @@ disp(WorkingShare_UBI);
 writetable(WorkingShare_UBI,[outpath,'WorkingShare_UBI.csv']);
 
 
-% Lorenz Curves
-vLorenzX_noUBI = zeros(1,nGridAsset);
-vLorenzY_noUBI = zeros(1,nGridAsset);
-vLorenzX_UBI = zeros(1,nGridAsset);
-vLorenzY_UBI = zeros(1,nGridAsset);
-for i=1:nGridAsset
-    vLorenzX_noUBI(i) = sum(sum(mStationaryDist_noUBI(1:i,:),2));
-    vLorenzY_noUBI(i) = sum(sum(mStationaryDist_noUBI(1:i,:),2).*vGridAsset(1:i)')/expectAssetHoldings_noUBI;
-    vLorenzX_UBI(i) = sum(sum(mStationaryDist_UBI(1:i,:),2));
-    vLorenzY_UBI(i) = sum(sum(mStationaryDist_UBI(1:i,:),2).*vGridAsset(1:i)')/expectAssetHoldings_UBI;    
-end
+
+% Lorenz Curves Wealth
+WvLorWealthX_noUBI = cumsum(sum(mStationaryDist_noUBI,2));
+vLorWealthY_noUBI = cumsum(sum(mStationaryDist_noUBI,2).*vGridAsset')/expectAssetHoldings_noUBI;
 
 figure;
-plot(linspace(0,1,nGridAsset),linspace(0,1,nGridAsset),vLorenzX_noUBI,vLorenzY_noUBI,vLorenzX_UBI,vLorenzY_UBI,'Linewidth',1.5);
+plot(linspace(0,1,nGridAsset),linspace(0,1,nGridAsset),vLorWealthX_noUBI,vLorWealthY_noUBI,vLorenzX_UBI,vLorenzY_UBI,'Linewidth',1.5);
 xlabel('share of population from lowest to highest wealth');
 ylabel('share of wealth');
 title('Lorenz Curves with and without UBI');
 legend('45 degree','noUBI','UBI');
 set(gca,'FontSize',13,'Fontweight','bold');
-print('-dpng', [outpath,'Lorenz_UBI_vs_noUBI','.png']);
+print('-dpng', [outpath,'Lorenz_Wealth','.png']);
 
+
+
+% Lorenz Curves Total Income
+mTotIncome_noUBI = wage_noUBI*mPolicyLabor_noUBI.*repmat(vGridShock,[nGridAsset,1]) + r_noUBI*repmat(vGridAsset',[1,nGridShock]);
+mTotIncome_noUBI = [reshape(mTotIncome_noUBI,[nGridAsset*nGridShock,1]),reshape(mStationaryDist_noUBI,[nGridAsset*nGridShock,1])];
+[~,idx] = sort(mTotIncome_noUBI(:,1)); 
+mTotIncome_noUBI = mTotIncome_noUBI(idx,:);
+
+vLorIncomeX_noUBI = cumsum(mTotIncome_noUBI(:,2));
+vLorIncomeY_noUBI = cumsum(mTotIncome_noUBI(:,1).*cumsum(mTotIncome_noUBI(:,2)))...
+    /sum(mTotIncome_noUBI(:,1).*cumsum(mTotIncome_noUBI(:,2)));
+
+
+mTotIncome_UBI = wage_noUBI*mPolicyLabor_UBI.*repmat(vGridShock,[nGridAsset,1]) + r_UBI*repmat(vGridAsset',[1,nGridShock]);
+mTotIncome_UBI = [reshape(mTotIncome_UBI,[nGridAsset*nGridShock,1]),reshape(mStationaryDist_UBI,[nGridAsset*nGridShock,1])];
+[~,idx] = sort(mTotIncome_UBI(:,1)); 
+mTotIncome_UBI = mTotIncome_UBI(idx,:);
+
+vLorIncomeX_UBI = cumsum(mTotIncome_UBI(:,2));
+vLorIncomeY_UBI = cumsum(mTotIncome_UBI(:,1).*cumsum(mTotIncome_UBI(:,2)))...
+    /sum(mTotIncome_UBI(:,1).*cumsum(mTotIncome_UBI(:,2)));
+
+figure;
+plot(linspace(0,1,nGridAsset),linspace(0,1,nGridAsset),vLorIncomeX_noUBI,vLorIncomeY_noUBI,vLorIncomeX_UBI,vLorIncomeY_UBI,'Linewidth',1.5);
+xlabel('share of population from lowest to highest wealth');
+ylabel('share of wealth');
+title('Lorenz Curves with and without UBI');
+legend('45 degree','noUBI','UBI');
+set(gca,'FontSize',13,'Fontweight','bold');
+print('-dpng', [outpath,'Lorenz_Income','.png']);
+
+
+% Welfare comparison in stationary Distribution
+v1 = sum(sum(mStationaryDist_UBI.*mValueFunction_UBI));
+v0 = sum(sum(mStationaryDist_noUBI.*mValueFunction_noUBI));
+gss = (v1/v0)^(1/(1-ssigma))-1;
+disp(gss)
 
 toc;
 beep;

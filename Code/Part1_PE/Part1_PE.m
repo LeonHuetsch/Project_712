@@ -626,42 +626,52 @@ print('-dpng', [outpath,'Data_comparison2','.png']);
 %% 9. Consumption Insurance
 
 ssigmaY = 0.2;
+ssigma = 1;
+nGridAsset = 1500;
+nPeriod = 2000;
 
-nPeriod = 61;
-MortOpt = 1;
+nHousehold = 1e02;
+optAccelerator = 10;
 
-nHousehold = 1e04;
-IncomeDataOpt = 1;
-
-covsHigh = zeros(1,nPeriod-1);
-varsHigh = zeros(1,nPeriod-1);
-
-% Persistence high
-ddelta = 0.99;
+ddelta = 0.98;
 [vGridAsset,vGridShock,mTransitionShock] = SetupGrids(nGridAsset,minGridAsset,maxGridAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
-[mIncome,mPolicyAsset,mPolicyCons] = VFI_FinHorizon(rrho,r,ssigma,vGridAsset,vGridShock,mTransitionShock,nPeriod,MortOpt);
-[mConsumption,mIncome] = Simulation_FiniteHorizon(mPolicyAsset,mPolicyCons,vGridAsset,vGridShock,ssigmaY,ddelta,nHousehold,IncomeDataOpt);
+[~,~,mPolicyAsset,~] = VFI_InfHorizon(rrho,r,ssigma,vGridAsset,vGridShock,mTransitionShock,0,optAccelerator);
+[~,mConsumption,mIncome] = Simulation_InfiniteHorizon(r,ddelta,ssigmaY,mPolicyAsset,vGridAsset,vGridShock,nHousehold,nPeriod);
 
-for nt=1:nPeriod-1
-    helper = cov(diff(log(mConsumption(nt,:))'),diff(log(mIncome(nt,:))'));
-    covsHigh(nt) = helper(1,2);
-    varsHigh(nt) = mean(var(diff(log(mIncome(nt,:))')));
+mConsumption = mConsumption(1000:end-1,:);
+mIncome = mIncome(1000:end-1,:);
+insCoeff = zeros(1,nHousehold);
+
+for nh=1:nHousehold
+    diffLogC = diff(log(mConsumption(:,nh)));
+    diffLogY = diff(log(mIncome(:,nh)));
+    covs = cov(diffLogC,diffLogY);
+    covs = covs(1,2);
+    insCoeff(nh) = 1-covs/var(diffLogY);
 end
+insCoeff_High = mean(insCoeff);
+disp(insCoeff_High)
 
-insurCoeffHigh = 1 - covsHigh./varsHigh;
 
-
-% Persistence low
-ddelta = 0.0;
+ddelta = 0.01;
 [vGridAsset,vGridShock,mTransitionShock] = SetupGrids(nGridAsset,minGridAsset,maxGridAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
-[~,mPolicyAsset,mPolicyCons] = VFI_FinHorizon(rrho,r,ssigma,vGridAsset,vGridShock,mTransitionShock,nPeriod,MortOpt);
-[mAsset,mConsumption,mIncome] = Simulation_FiniteHorizon(mPolicyAsset,mPolicyCons,vGridAsset,vGridShock,ssigmaY,ddelta,nHousehold,IncomeDataOpt);
+[~,~,mPolicyAsset,~] = VFI_InfHorizon(rrho,r,ssigma,vGridAsset,vGridShock,mTransitionShock,0,optAccelerator);
+[~,mConsumption,mIncome] = Simulation_InfiniteHorizon(r,ddelta,ssigmaY,mPolicyAsset,vGridAsset,vGridShock,nHousehold,nPeriod);
 
-covsLow = cov(diff(log(mConsumption(1:(end-1),:))),diff(log(mIncome(1:(end-1),:))));
-covsLow = covsLow(1,2);
-varsLow = mean(var(diff(log(mIncome(1:(end-1),:)))));
+mConsumption = mConsumption(1000:end-1,:);
+mIncome = mIncome(1000:end-1,:);
+insCoeff = zeros(1,nHousehold);
 
-insurCoeffLow = 1 - covsLow/varsLow;
+for nh=1:nHousehold
+    diffLogC = diff(log(mConsumption(:,nh)));
+    diffLogY = diff(log(mIncome(:,nh)));
+    covs = cov(diffLogC,diffLogY);
+    covs = covs(1,2);
+    insCoeff(nh) = 1-covs/var(diffLogY);
+end
+insCoeff_Low = mean(insCoeff);
+disp(insCoeff_Low)
+
 
 
 

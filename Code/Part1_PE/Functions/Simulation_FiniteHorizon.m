@@ -1,5 +1,5 @@
 function [mAsset,mConsumption,mIncome] = Simulation_FiniteHorizon(mPolicyAsset,...
-    mPolicyCons,vGridAsset,vGridShock,sigmaY,delta,nHousehold,IncomeDataOpt)
+    mPolicyCons,vGridAsset,vGridShock,ssigmaY,ddelta,nHousehold,IncomeDataOpt)
 
 % Simulates consumption asset holding paths for nHousehold households and
 % nPeriod periods. All households start with average income and no assets
@@ -17,7 +17,7 @@ if IncomeDataOpt == 0
     vGridLogShock = log(vGridShock);
 
     rng(1)
-    shockDraws = normrnd(0,sigmaY,[nPeriod,nHousehold]);
+    shockDraws = normrnd(0,ssigmaY,[nPeriod,nHousehold]);
 
     mIncome = zeros(nPeriod,nHousehold);                % Income matrix
     mLogIncome = zeros(nPeriod,nHousehold);             % Log income matrix
@@ -32,8 +32,8 @@ if IncomeDataOpt == 0
 
     for hh=1:nHousehold    
         for t=2:nPeriod
-            [~,IndexNext] = min(abs(vGridLogShock - (delta*mLogIncome(t-1,hh)...
-                + sqrt(1-delta^2)*shockDraws(t-1,hh))));
+            [~,IndexNext] = min(abs(vGridLogShock - (ddelta*mLogIncome(t-1,hh)...
+                + sqrt(1-ddelta^2)*shockDraws(t-1,hh))));
             mLogIncome(t,hh) = vGridLogShock(IndexNext);
             mIncome(t,hh) = exp(mLogIncome(t,hh));
 
@@ -66,7 +66,7 @@ else
     vGridLogShock = log(vGridShock);
 
     rng(1)
-    shockDraws = normrnd(0,sigmaY,[nPeriod,nHousehold]);
+    shockDraws = normrnd(0,ssigmaY,[nPeriod,nHousehold]);
 
     mIncome = zeros(nPeriod,nHousehold);
     mLogIncome = zeros(nPeriod,nHousehold);
@@ -89,7 +89,7 @@ else
         if t<=45
             % Find next income shock on Grid
             [~,IndexNext] = min(abs(vGridLogShock - (log(vIncomeData(t)) +...
-                delta*mLogIncome(t-1,hh) + sqrt(1-delta^2)*shockDraws(t-1,hh))));
+                ddelta*mLogIncome(t-1,hh) + sqrt(1-ddelta^2)*shockDraws(t-1,hh))));
             mLogIncome(t,hh) = vGridLogShock(IndexNext);
             mIncome(t,hh) = exp(mLogIncome(t,hh));
         else
