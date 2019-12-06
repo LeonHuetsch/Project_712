@@ -36,10 +36,10 @@ govtRevenue = ttau*wage*(sum(sum(mStationaryDist.*(mPolicyLabor.*...
 
 if llambda == 0
     vEqConditions(1) = capitalDemand - expectAssetHoldings;
-    vEqConditions(2) = 20*(workingShare - 0.8);
+    vEqConditions(2) = 10*(workingShare - 0.8);
 else
     vEqConditions(1) = capitalDemand - expectAssetHoldings;
-    vEqConditions(2) = 20*(govtRevenue - llambda);
+    vEqConditions(2) = 50*(govtRevenue - llambda);
 end
 
 end

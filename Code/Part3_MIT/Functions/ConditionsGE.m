@@ -1,4 +1,4 @@
-function EqCondition = ConditionsGE(nGridAsset,minAsset,maxAsset,vMultiSteps,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt,rrho,aalpha,A,depreciation,ssigma,mValueGuess,llambda,r,kkappa,ttau,optAccelerator)
+function EqCondition = ConditionsGE(nGridAsset,minAsset,maxAsset,vMultiSteps,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt,rrho,aalpha,A,depreciation,ssigma,mValueGuess,r,optAccelerator)
 
 
 % Given interest rate r, tax rate tau and disutility of working kappa
@@ -13,14 +13,15 @@ function EqCondition = ConditionsGE(nGridAsset,minAsset,maxAsset,vMultiSteps,nGr
 %% Savings
 [vGridAsset,vGridShock,mTransitionShock] = SetupGrids(nGridAsset,minAsset,maxAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
 
-[~,~,~,mIndexPolicyAsset,mPolicyLabor] = MultigridVFI_UBI(ttau,kkappa,llambda,rrho,r,ssigma,aalpha,A,depreciation,minAsset,maxAsset,mTransitionShock,vGridShock,vMultiSteps,mValueGuess,optAccelerator);
+[~,~,mPolicyAsset,~] = MultigridVFI_InfHorizon(rrho,r,ssigma,aalpha,A,depreciation,minAsset,maxAsset,mTransitionShock,vGridShock,vMultiSteps,mValueGuess,optAccelerator);
+%[~,~,~,mIndexPolicyAsset,mPolicyLabor] = MultigridVFI_UBI(ttau,kkappa,llambda,rrho,r,ssigma,aalpha,A,depreciation,minAsset,maxAsset,mTransitionShock,vGridShock,vMultiSteps,mValueGuess,optAccelerator);
 
-[mStationaryDist,expectAssetHoldings] = StationaryDist(vGridAsset,nGridShock,mTransitionShock,mIndexPolicyAsset);
+[~,expectAssetHoldings] = StationaryDist(vGridAsset,nGridShock,mTransitionShock,mPolicyAsset);
 
 
 %% Capital demand 
-effectiveLaborSup = sum(sum(mStationaryDist.*mPolicyLabor.*repmat(reshape(vGridShock,[1,nGridShock]),[nGridAsset,1])));
-capitalDemand = (aalpha*A/(r+depreciation))^(1/(1-aalpha))*effectiveLaborSup;
+%effectiveLaborSup = sum(sum(mStationaryDist.*mPolicyLabor.*repmat(reshape(vGridShock,[1,nGridShock]),[nGridAsset,1])));
+capitalDemand = (aalpha*A/(r+depreciation))^(1/(1-aalpha));
 
 
 %% Share of population working

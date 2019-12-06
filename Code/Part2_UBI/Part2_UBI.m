@@ -1,9 +1,9 @@
 %% Housekeeping
 
 close all
-
+outpath = '/Users/Leon/Desktop/PhD-Studies/2nd_Year/Courses/Macro_HetHH/Project/Tex/Figures/Part2_UBI/';
+%outpath ='Output/';
 addpath('Functions')
-outpath ='Output/';
 
 
 %% Parameters for Income Process and Grids
@@ -17,14 +17,14 @@ A = 1;                  % productivity parameter in Cobb-Douglas production func
 %A = @(r) (r+depreciation)/alpha;
 
 ssigma = 1;             % risk aversion parameter households
-ddelta = 0.6;           % persistence of income shock
+ddelta = 0.8;           % persistence of income shock
 ssigmaY = 0.2;          % variance of income shock    
 
-nGridAsset = 350;       % gridsize assets
-nGridShock = 21;        % gridsize income process
+nGridAsset = 500;       % gridsize assets
+nGridShock = 15;        % gridsize income process
 
 minAsset = 0;           % smallest asset grid point
-maxAsset = 30;          % largest asset grid point
+maxAsset = 100;          % largest asset grid point
 
 logShockAverage = 0;    % average shock in logs
 truncOpt = 0;           % truncation of normal distribution for shocks (0 is no truncation)
@@ -39,7 +39,7 @@ wage = @(r) (1-aalpha)*A*(aalpha*A/(r+depr))^(aalpha/(1-aalpha));
 
 %% Plot Capital vs Asset Holdings for different r
 
-
+%{
 nInterest = 20;
 vGridInterest = linspace(-depr+0.04,rrho-0.0001,nInterest);
 %vGridInterest = linspace(-0.02,0.038,nInterest);
@@ -88,7 +88,7 @@ set(ax,'FontSize',14,'Fontweight','bold');
 set(tit,'Fontsize',14,'Fontweight','bold');
 set(xla,'Fontsize',14,'Fontweight','bold');
 print('-depsc', [outpath,'Capital_MarketClearing','.eps']);
-
+%}
 
 
 
@@ -100,7 +100,8 @@ print('-depsc', [outpath,'Capital_MarketClearing','.eps']);
 llambda_noUBI = 0;
 ttau_noUBI = 0;
 
-vMultiSteps = [60 350];
+mGuessVF = 0; 
+vMultiSteps = [80 500];
 optAccelerator = 35;    
     
 EqConditions_noUBI = @(EqParameters) sum(ConditionsGE(nGridAsset,minAsset,maxAsset,vMultiSteps,nGridShock,ssigmaY,ddelta,...
@@ -109,8 +110,8 @@ EqConditions_noUBI = @(EqParameters) sum(ConditionsGE(nGridAsset,minAsset,maxAss
 vInitialGuess = [0.035 0.6];
 options = optimset('fminsearch');
 options.Display = 'final';
-options.TolFun = 1e-06;
-options.TolX = 1e-06;
+options.TolFun = 1e-08;
+options.TolX = 1e-08;
 
 [EqParameters_noUBI,diff_noUBI] = fminsearch(EqConditions_noUBI,vInitialGuess,options);
 
@@ -146,6 +147,7 @@ Summary_noUBI.Properties.RowNames = TransferPolicy;
 Summary_noUBI.Properties.VariableNames = VarNames;
 disp(Summary_noUBI);
 
+writetable(Summary_noUBI,[outpath,'Summary_noUBI.csv']);
 
 % Table for equilibrium conditions
 workingShare_noUBI = sum(sum(mStationaryDist_noUBI.*mPolicyLabor_noUBI));
@@ -160,6 +162,9 @@ WorkingShare_noUBI.Properties.RowNames = {'Working_Share'};
 WorkingShare_noUBI.Properties.VariableNames = {'Working_Share','Target','difference'};
 disp(WorkingShare_noUBI);
 
+writetable(CapitalMarket_noUBI,[outpath,'CapitalMarket_noUBI.csv']);
+writetable(WorkingShare_noUBI,[outpath,'WorkingShare_noUBI.csv']);
+
 
 figure;
 pl=mesh(mStationaryDist_noUBI);
@@ -172,7 +177,7 @@ set(ax,'FontSize',14,'Fontweight','bold');
 set(tit,'Fontsize',14,'Fontweight','bold');
 set(xla,'Fontsize',14,'Fontweight','bold');
 set(yla,'Fontsize',14,'Fontweight','bold');
-print('-depsc', [outpath,'StationaryDist_noUBI','.eps']);
+print('-dpng', [outpath,'StationaryDist_noUBI','.png']);
 
 figure;
 pl=plot(vGridAsset,mPolicyAsset_noUBI(:,end));
@@ -185,7 +190,7 @@ set(ax,'FontSize',14,'Fontweight','bold');
 set(tit,'Fontsize',14,'Fontweight','bold');
 set(xla,'Fontsize',14,'Fontweight','bold');
 set(yla,'Fontsize',14,'Fontweight','bold');
-print('-depsc', [outpath,'Polfun_assets_noUBI','.eps']);
+print('-dpng', [outpath,'Polfun_assets_noUBI','.png']);
 
 
 
@@ -202,7 +207,7 @@ print('-depsc', [outpath,'Polfun_assets_noUBI','.eps']);
 kkappa = kkappa_noUBI;
 llambda_UBI = 0.2;
 
-vMultiSteps = [60 350];
+vMultiSteps = [80 500];
 optAccelerator = 35;
 
 EqConditions_UBI = @(EqParameters) sum(ConditionsGE(nGridAsset,minAsset,maxAsset,vMultiSteps,nGridShock,ssigmaY,ddelta,...
@@ -211,8 +216,8 @@ EqConditions_UBI = @(EqParameters) sum(ConditionsGE(nGridAsset,minAsset,maxAsset
 vInitialGuess = [0.035 0.1];
 options = optimset('fminsearch');
 options.Display = 'final';
-options.TolFun = 1e-06;
-options.TolX = 1e-06;
+options.TolFun = 1e-08;
+options.TolX = 1e-08;
 
 [EqParameters_UBI,diff_UBI] = fminsearch(EqConditions_UBI,vInitialGuess,options);
 
@@ -247,6 +252,8 @@ Summary_UBI.Properties.RowNames = TransferPolicy;
 Summary_UBI.Properties.VariableNames = VarNames;
 disp(Summary_UBI);
 
+writetable(Summary_UBI,[outpath,'Summary_UBI.csv']);
+
 
 % Table for equilibrium conditions
 workingShare_UBI = sum(sum(mStationaryDist_UBI.*mPolicyLabor_UBI));
@@ -258,15 +265,13 @@ CapitalMarket_UBI.Properties.RowNames = {'Capital_Market'};
 CapitalMarket_UBI.Properties.VariableNames = {'Ea','K','difference'};
 disp(CapitalMarket_UBI);
 
-WorkingShare_UBI = table(workingShare_UBI,0.8,workingShare_UBI-0.8);
-WorkingShare_UBI.Properties.RowNames = {'Working_Share'};
-WorkingShare_UBI.Properties.VariableNames = {'Working_Share','Target','difference'};
-disp(WorkingShare_UBI);
-
 UBI = table(govtRevenue_UBI,llambda_UBI,govtRevenue_UBI-llambda_UBI);
 UBI.Properties.RowNames = {'UBI_Transfer'};
 UBI.Properties.VariableNames = {'Govt_Revenue','UBI_Lambda','difference'};
 disp(UBI);
+
+writetable(CapitalMarket_UBI,[outpath,'CapitalMarket_UBI.csv']);
+writetable(UBI,[outpath,'UBI.csv']);
 
 
 figure;
@@ -280,7 +285,7 @@ set(ax,'FontSize',14,'Fontweight','bold');
 set(tit,'Fontsize',14,'Fontweight','bold');
 set(xla,'Fontsize',14,'Fontweight','bold');
 set(yla,'Fontsize',14,'Fontweight','bold');
-print('-depsc', [outpath,'StationaryDist_UBI','.eps']);
+print('-dpng', [outpath,'StationaryDist_UBI','.png']);
 
 figure;
 pl=plot(vGridAsset,mPolicyAsset_UBI(:,end));
@@ -293,7 +298,17 @@ set(ax,'FontSize',14,'Fontweight','bold');
 set(tit,'Fontsize',14,'Fontweight','bold');
 set(xla,'Fontsize',14,'Fontweight','bold');
 set(yla,'Fontsize',14,'Fontweight','bold');
-print('-depsc', [outpath,'Polfun_assets_UBI','.eps']);
+print('-dpng', [outpath,'Polfun_assets_UBI','.png']);
+
+
+
+% Comparison UBI to no UBi
+WorkingShare_UBI = table(workingShare_UBI,0.8,workingShare_UBI-0.8);
+WorkingShare_UBI.Properties.RowNames = {'Working_Share'};
+WorkingShare_UBI.Properties.VariableNames = {'UBI','no_UBI','difference'};
+disp(WorkingShare_UBI);
+
+writetable(WorkingShare_UBI,[outpath,'WorkingShare_UBI.csv']);
 
 
 % Lorenz Curves
@@ -315,7 +330,7 @@ ylabel('share of wealth');
 title('Lorenz Curves with and without UBI');
 legend('45 degree','noUBI','UBI');
 set(gca,'FontSize',13,'Fontweight','bold');
-print('-depsc', [outpath,'Lorenz_UBI_vs_noUBI','.eps']);
+print('-dpng', [outpath,'Lorenz_UBI_vs_noUBI','.png']);
 
 
 toc;

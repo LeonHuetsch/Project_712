@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2016.8.15)  3 DEC 2019 21:15
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2016.8.15)  5 DEC 2019 20:22
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -300,14 +300,50 @@ Package: framed 2011/10/22 v 0.96: framed or shaded text with page breaks
 \FrameRule=\dimen132
 \FrameSep=\dimen133
 )
-(/usr/local/texlive/2015/texmf-dist/tex/latex/tocvsec2/tocvsec2.sty
-Package: tocvsec2 2014/03/10 v1.3a variable ToC section entries
+(/usr/local/texlive/2015/texmf-dist/tex/latex/csvsimple/csvsimple.sty
+Package: csvsimple 2014/07/14 version 1.12 LaTeX CSV file processing
 
-(/usr/local/texlive/2015/texmf-dist/tex/latex/base/ifthen.sty
+(/usr/local/texlive/2015/texmf-dist/tex/latex/pgf/utilities/pgfkeys.sty
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex
+\pgfkeys@pathtoks=\toks28
+\pgfkeys@temptoks=\toks29
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/utilities/pgfkeysfiltered.c
+ode.tex
+\pgfkeys@tmptoks=\toks30
+))) (/usr/local/texlive/2015/texmf-dist/tex/latex/base/ifthen.sty
 Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
 )
-\c@max@tocdepth=\count107
-\c@max@secnumdepth=\count108
+\csv@file=\read2
+\c@csvinputline=\count107
+\c@csvrow=\count108
+\c@csvcol=\count109
+\csv@out=\write3
+)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/booktabs/booktabs.sty
+Package: booktabs 2005/04/14 v1.61803 publication quality tables
+\heavyrulewidth=\dimen134
+\lightrulewidth=\dimen135
+\cmidrulewidth=\dimen136
+\belowrulesep=\dimen137
+\belowbottomsep=\dimen138
+\aboverulesep=\dimen139
+\abovetopsep=\dimen140
+\cmidrulesep=\dimen141
+\cmidrulekern=\dimen142
+\defaultaddspace=\dimen143
+\@cmidla=\count110
+\@cmidlb=\count111
+\@aboverulesep=\dimen144
+\@belowrulesep=\dimen145
+\@thisruleclass=\count112
+\@lastruleclass=\count113
+\@thisrulewidth=\dimen146
+)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/tocvsec2/tocvsec2.sty
+Package: tocvsec2 2014/03/10 v1.3a variable ToC section entries
+\c@max@tocdepth=\count114
+\c@max@secnumdepth=\count115
 )
 (/usr/local/texlive/2015/texmf-dist/tex/latex/hyperref/hyperref.sty
 Package: hyperref 2012/11/06 v6.83m Hypertext links for LaTeX
@@ -366,14 +402,14 @@ Package: auxhook 2011/03/04 v1.3 Hooks for auxiliary files (HO)
 (/usr/local/texlive/2015/texmf-dist/tex/latex/oberdiek/kvoptions.sty
 Package: kvoptions 2011/06/30 v3.11 Key value format for package options (HO)
 )
-\@linkdim=\dimen134
-\Hy@linkcounter=\count109
-\Hy@pagecounter=\count110
+\@linkdim=\dimen147
+\Hy@linkcounter=\count116
+\Hy@pagecounter=\count117
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/hyperref/pd1enc.def
 File: pd1enc.def 2012/11/06 v6.83m Hyperref: PDFDocEncoding definition (HO)
 )
-\Hy@SavedSpaceFactor=\count111
+\Hy@SavedSpaceFactor=\count118
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/latexconfig/hyperref.cfg
 File: hyperref.cfg 2002/06/06 v1.2 hyperref configuration of TeXLive
@@ -385,17 +421,17 @@ Package hyperref Info: Plain pages OFF on input line 4458.
 Package hyperref Info: Backreferencing OFF on input line 4463.
 Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
 Package hyperref Info: Bookmarks ON on input line 4688.
-\c@Hy@tempcnt=\count112
+\c@Hy@tempcnt=\count119
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/url/url.sty
 \Urlmuskip=\muskip11
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
 LaTeX Info: Redefining \url on input line 5041.
-\XeTeXLinkMargin=\dimen135
-\Fld@menulength=\count113
-\Field@Width=\dimen136
-\Fld@charsize=\dimen137
+\XeTeXLinkMargin=\dimen148
+\Fld@menulength=\count120
+\Field@Width=\dimen149
+\Fld@charsize=\dimen150
 Package hyperref Info: Hyper figures OFF on input line 6295.
 Package hyperref Info: Link nesting OFF on input line 6300.
 Package hyperref Info: Hyper index ON on input line 6303.
@@ -405,17 +441,17 @@ Package hyperref Info: Link coloring with OCG OFF on input line 6320.
 Package hyperref Info: PDF/A mode OFF on input line 6325.
 LaTeX Info: Redefining \ref on input line 6365.
 LaTeX Info: Redefining \pageref on input line 6369.
-\Hy@abspage=\count114
-\c@Item=\count115
-\c@Hfootnote=\count116
+\Hy@abspage=\count121
+\c@Item=\count122
+\c@Hfootnote=\count123
 )
 
 Package hyperref Message: Driver (autodetected): hpdftex.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/hyperref/hpdftex.def
 File: hpdftex.def 2012/11/06 v6.83m Hyperref driver for pdfTeX
-\Fld@listcount=\count117
-\c@bookmark@seq@number=\count118
+\Fld@listcount=\count124
+\c@bookmark@seq@number=\count125
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/oberdiek/rerunfilecheck.sty
 Package: rerunfilecheck 2011/04/15 v1.7 Rerun checks for auxiliary files (HO)
@@ -429,30 +465,30 @@ Package: bookmark 2011/12/02 v1.24 PDF bookmarks (HO)
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/oberdiek/bkm-pdftex.def
 File: bkm-pdftex.def 2011/12/02 v1.24 bookmark driver for pdfTeX (HO)
-\BKM@id=\count119
+\BKM@id=\count126
 ))
 (/usr/local/texlive/2015/texmf-dist/tex/latex/geometry/geometry.sty
 Package: geometry 2010/09/12 v5.6 Page Geometry
-\Gm@cnth=\count120
-\Gm@cntv=\count121
-\c@Gm@tempcnt=\count122
-\Gm@bindingoffset=\dimen138
-\Gm@wd@mp=\dimen139
-\Gm@odd@mp=\dimen140
-\Gm@even@mp=\dimen141
-\Gm@layoutwidth=\dimen142
-\Gm@layoutheight=\dimen143
-\Gm@layouthoffset=\dimen144
-\Gm@layoutvoffset=\dimen145
-\Gm@dimlist=\toks28
+\Gm@cnth=\count127
+\Gm@cntv=\count128
+\c@Gm@tempcnt=\count129
+\Gm@bindingoffset=\dimen151
+\Gm@wd@mp=\dimen152
+\Gm@odd@mp=\dimen153
+\Gm@even@mp=\dimen154
+\Gm@layoutwidth=\dimen155
+\Gm@layoutheight=\dimen156
+\Gm@layouthoffset=\dimen157
+\Gm@layoutvoffset=\dimen158
+\Gm@dimlist=\toks31
 )
 (/usr/local/texlive/2015/texmf-dist/tex/latex/preprint/authblk.sty
 Package: authblk 2001/02/27 1.3 (PWD)
 \affilsep=\skip55
 \@affilsep=\skip56
-\c@Maxaffil=\count123
-\c@authors=\count124
-\c@affil=\count125
+\c@Maxaffil=\count130
+\c@authors=\count131
+\c@affil=\count132
 )
 (/usr/local/texlive/2015/texmf-dist/tex/latex/titling/titling.sty
 Package: titling 2009/09/04 v2.1d maketitle typesetting
@@ -465,15 +501,15 @@ Package: mathrsfs 1996/01/01 Math RSFS package v1.0 (jk)
 \symrsfs=\mathgroup8
 )
 (/usr/local/texlive/2015/texmf-dist/tex/latex/comment/comment.sty
-\CommentStream=\write3
+\CommentStream=\write4
 
 Excluding comment 'comment')
 (/usr/local/texlive/2015/texmf-dist/tex/latex/float/float.sty
 Package: float 2001/11/08 v1.3d Float enhancements (AL)
-\c@float@type=\count126
-\float@exts=\toks29
+\c@float@type=\count133
+\float@exts=\toks32
 \float@box=\box28
-\@float@everytoks=\toks30
+\@float@everytoks=\toks33
 \@floatcapt=\box29
 )
 (/usr/local/texlive/2015/texmf-dist/tex/latex/graphics/color.sty
@@ -484,9 +520,9 @@ File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
 )
 Package color Info: Driver file: pdftex.def on input line 142.
 )
-\c@theorem=\count127
-\c@proposition=\count128
-\c@definition=\count129
+\c@theorem=\count134
+\c@proposition=\count135
+\c@definition=\count136
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/sectsty/sectsty.sty
 Package: sectsty 2002/02/25 v2.0.2 Commands to change all sectional heading sty
@@ -497,51 +533,51 @@ Package: titlesec 2011/12/15 v2.10.0 Sectioning titles
 \ttl@box=\box30
 \beforetitleunit=\skip60
 \aftertitleunit=\skip61
-\ttl@plus=\dimen146
-\ttl@minus=\dimen147
-\ttl@toksa=\toks31
-\titlewidth=\dimen148
-\titlewidthlast=\dimen149
-\titlewidthfirst=\dimen150
+\ttl@plus=\dimen159
+\ttl@minus=\dimen160
+\ttl@toksa=\toks34
+\titlewidth=\dimen161
+\titlewidthlast=\dimen162
+\titlewidthfirst=\dimen163
 )
 (./ProjectMain.aux)
 \openout1 = `ProjectMain.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 72.
-LaTeX Font Info:    ... okay on input line 72.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 72.
-LaTeX Font Info:    ... okay on input line 72.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 72.
-LaTeX Font Info:    ... okay on input line 72.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 72.
-LaTeX Font Info:    ... okay on input line 72.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 72.
-LaTeX Font Info:    ... okay on input line 72.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 72.
-LaTeX Font Info:    ... okay on input line 72.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 72.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 72.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 74.
+LaTeX Font Info:    ... okay on input line 74.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 74.
+LaTeX Font Info:    ... okay on input line 74.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 74.
+LaTeX Font Info:    ... okay on input line 74.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 74.
+LaTeX Font Info:    ... okay on input line 74.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 74.
+LaTeX Font Info:    ... okay on input line 74.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 74.
+LaTeX Font Info:    ... okay on input line 74.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 74.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 74.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 72.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 72.
-LaTeX Font Info:    ... okay on input line 72.
+LaTeX Font Info:    ... okay on input line 74.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 74.
+LaTeX Font Info:    ... okay on input line 74.
 
 (/usr/local/texlive/2015/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count130
-\scratchdimen=\dimen151
+\scratchcounter=\count137
+\scratchdimen=\dimen164
 \scratchbox=\box31
-\nofMPsegments=\count131
-\nofMParguments=\count132
-\everyMPshowfont=\toks32
-\MPscratchCnt=\count133
-\MPscratchDim=\dimen152
-\MPnumerator=\count134
-\makeMPintoPDFobject=\count135
-\everyMPtoPDFconversion=\toks33
+\nofMPsegments=\count138
+\nofMParguments=\count139
+\everyMPshowfont=\toks35
+\MPscratchCnt=\count140
+\MPscratchDim=\dimen165
+\MPnumerator=\count141
+\makeMPintoPDFobject=\count142
+\everyMPtoPDFconversion=\toks36
 ) (/usr/local/texlive/2015/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
 Package: epstopdf-base 2010/02/09 v2.5 Base part for package epstopdf
 
@@ -562,7 +598,7 @@ Package caption Info: float package is loaded.
 Package caption Info: hyperref package is loaded.
 Package caption Info: End \AtBeginDocument code.
 \AtBeginShipoutBox=\box32
-Package hyperref Info: Link coloring OFF on input line 72.
+Package hyperref Info: Link coloring OFF on input line 74.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
@@ -570,11 +606,11 @@ Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
 (/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
 Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 )
-\c@section@level=\count136
+\c@section@level=\count143
 )
-LaTeX Info: Redefining \ref on input line 72.
-LaTeX Info: Redefining \pageref on input line 72.
-LaTeX Info: Redefining \nameref on input line 72.
+LaTeX Info: Redefining \ref on input line 74.
+LaTeX Info: Redefining \pageref on input line 74.
+LaTeX Info: Redefining \nameref on input line 74.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -612,126 +648,278 @@ LaTeX Info: Redefining \nameref on input line 72.
 
 
 LaTeX Font Warning: Font shape `OT1/cmr/bx/n' in size <16> not available
-(Font)              size <17.28> substituted on input line 73.
+(Font)              size <17.28> substituted on input line 75.
 
-LaTeX Font Info:    Try loading font information for U+msa on input line 73.
+LaTeX Font Info:    Try loading font information for U+msa on input line 75.
 (/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 73.
+LaTeX Font Info:    Try loading font information for U+msb on input line 75.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Try loading font information for U+esvect on input line 73.
+LaTeX Font Info:    Try loading font information for U+esvect on input line 75.
 
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/esvect/uesvect.fd
 File: uesvect.fd 
 )
-LaTeX Font Info:    Try loading font information for U+esint on input line 73.
+LaTeX Font Info:    Try loading font information for U+esint on input line 75.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/esint/uesint.fd
 File: uesint.fd 
 )
-LaTeX Font Info:    Try loading font information for U+rsfs on input line 73.
+LaTeX Font Info:    Try loading font information for U+rsfs on input line 75.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/jknapltx/ursfs.fd
 File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
 )
-Underfull \hbox (badness 10000) in paragraph at lines 81--84
+Underfull \hbox (badness 10000) in paragraph at lines 83--86
 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 103--104
+\OT1/cmr/m/n/12 The files VFI[]InfHorizon.m and Sim-u-la-tion[]InfiniteHorizon.
+m in the folder
  []
 
 [1
 
 {/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+Underfull \hbox (badness 10000) in paragraph at lines 108--109
+\OT1/cmr/m/n/12 The files VFI[]FinHorizon.m and Sim-u-la-tion[]FiniteHorizon.m 
+in the folder
+ []
+
 <Figures/Part1_PE/consFunc_inf_low.png, id=21, 562.2606pt x 421.575pt>
 File: Figures/Part1_PE/consFunc_inf_low.png Graphic file (type png)
 
 <use Figures/Part1_PE/consFunc_inf_low.png>
 Package pdftex.def Info: Figures/Part1_PE/consFunc_inf_low.png used on input li
-ne 114.
+ne 116.
 (pdftex.def)             Requested size: 281.12961pt x 210.78697pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 114--118
+
+ []
 
 <Figures/Part1_PE/consFunc_inf_high.png, id=22, 562.2606pt x 421.575pt>
 File: Figures/Part1_PE/consFunc_inf_high.png Graphic file (type png)
 
 <use Figures/Part1_PE/consFunc_inf_high.png>
 Package pdftex.def Info: Figures/Part1_PE/consFunc_inf_high.png used on input l
-ine 119.
+ine 121.
 (pdftex.def)             Requested size: 253.01492pt x 189.70699pt.
- [2 <./Figures/Part1_PE/consFunc_inf_low.png (PNG copy)>]
-<Figures/Part1_PE/consFunc_inf_comp1.png, id=28, 562.2606pt x 421.575pt>
-File: Figures/Part1_PE/consFunc_inf_comp1.png Graphic file (type png)
 
-<use Figures/Part1_PE/consFunc_inf_comp1.png>
-Package pdftex.def Info: Figures/Part1_PE/consFunc_inf_comp1.png used on input 
-line 126.
-(pdftex.def)             Requested size: 281.12961pt x 210.78697pt.
+Underfull \hbox (badness 10000) in paragraph at lines 119--123
 
-<Figures/Part1_PE/consFunc_inf_comp2.png, id=29, 562.2606pt x 421.575pt>
-File: Figures/Part1_PE/consFunc_inf_comp2.png Graphic file (type png)
+ []
 
-<use Figures/Part1_PE/consFunc_inf_comp2.png>
-Package pdftex.def Info: Figures/Part1_PE/consFunc_inf_comp2.png used on input 
-line 130.
-(pdftex.def)             Requested size: 253.01492pt x 189.70699pt.
- [3 <./Figures/Part1_PE/consFunc_inf_high.png (PNG copy)> <./Figures/Part1_PE/c
-onsFunc_inf_comp1.png (PNG copy)>] <Figures/Part1_PE/consFunc_fin_low.png, id=3
-6, 562.2606pt x 421.575pt>
+[2 <./Figures/Part1_PE/consFunc_inf_low.png (PNG copy)>]
+<Figures/Part1_PE/consFunc_fin_low.png, id=28, 562.2606pt x 421.575pt>
 File: Figures/Part1_PE/consFunc_fin_low.png Graphic file (type png)
 
 <use Figures/Part1_PE/consFunc_fin_low.png>
 Package pdftex.def Info: Figures/Part1_PE/consFunc_fin_low.png used on input li
-ne 141.
+ne 134.
 (pdftex.def)             Requested size: 281.12961pt x 210.78697pt.
 
-<Figures/Part1_PE/consFunc_fin_high.png, id=37, 562.2606pt x 421.575pt>
+Underfull \hbox (badness 10000) in paragraph at lines 132--136
+
+ []
+
+[3 <./Figures/Part1_PE/consFunc_inf_high.png (PNG copy)>]
+<Figures/Part1_PE/consFunc_fin_high.png, id=34, 562.2606pt x 421.575pt>
 File: Figures/Part1_PE/consFunc_fin_high.png Graphic file (type png)
 
 <use Figures/Part1_PE/consFunc_fin_high.png>
 Package pdftex.def Info: Figures/Part1_PE/consFunc_fin_high.png used on input l
-ine 146.
+ine 139.
 (pdftex.def)             Requested size: 253.01492pt x 189.70699pt.
- [4 <./Figures/Part1_PE/consFunc_inf_comp2.png (PNG copy)> <./Figures/Part1_PE/
-consFunc_fin_low.png (PNG copy)>]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 159.
 
-[5 <./Figures/Part1_PE/consFunc_fin_high.png (PNG copy)>]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 159.
+Underfull \hbox (badness 10000) in paragraph at lines 137--141
+
+ []
+
+[4 <./Figures/Part1_PE/consFunc_fin_low.png (PNG copy)> <./Figures/Part1_PE/con
+sFunc_fin_high.png (PNG copy)>]
+Underfull \hbox (badness 10000) in paragraph at lines 151--152
+
+ []
+
+<Figures/Part1_PE/sim_simple.png, id=41, 562.2606pt x 421.575pt>
+File: Figures/Part1_PE/sim_simple.png Graphic file (type png)
+
+<use Figures/Part1_PE/sim_simple.png>
+Package pdftex.def Info: Figures/Part1_PE/sim_simple.png used on input line 154
+.
+(pdftex.def)             Requested size: 253.01492pt x 189.70699pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 158--160
+
+ []
+
+<Figures/Part1_PE/sim_risk.png, id=42, 562.2606pt x 421.575pt>
+File: Figures/Part1_PE/sim_risk.png Graphic file (type png)
+
+<use Figures/Part1_PE/sim_risk.png>
+Package pdftex.def Info: Figures/Part1_PE/sim_risk.png used on input line 162.
+(pdftex.def)             Requested size: 253.01492pt x 189.70699pt.
+ [5 <./Figures/Part1_PE/sim_simple.png (PNG copy)>]
+Underfull \hbox (badness 10000) in paragraph at lines 166--167
+
+ []
+
+<Figures/Part1_PE/sim_borrowing.png, id=48, 562.2606pt x 421.575pt>
+File: Figures/Part1_PE/sim_borrowing.png Graphic file (type png)
+
+<use Figures/Part1_PE/sim_borrowing.png>
+Package pdftex.def Info: Figures/Part1_PE/sim_borrowing.png used on input line 
+169.
+(pdftex.def)             Requested size: 253.01492pt x 189.70699pt.
+ [6 <./Figures/Part1_PE/sim_risk.png (PNG copy)> <./Figures/Part1_PE/sim_borrow
+ing.png (PNG copy)>]
+<Figures/Part1_PE/sim_Data.png, id=55, 562.2606pt x 421.575pt>
+File: Figures/Part1_PE/sim_Data.png Graphic file (type png)
+
+<use Figures/Part1_PE/sim_Data.png>
+Package pdftex.def Info: Figures/Part1_PE/sim_Data.png used on input line 184.
+(pdftex.def)             Requested size: 253.01492pt x 189.70699pt.
+ [7 <./Figures/Part1_PE/sim_Data.png (PNG copy)>] <Figures/Part1_PE/Data_compar
+ison.png, id=62, 562.2606pt x 421.575pt>
+File: Figures/Part1_PE/Data_comparison.png Graphic file (type png)
+
+<use Figures/Part1_PE/Data_comparison.png>
+Package pdftex.def Info: Figures/Part1_PE/Data_comparison.png used on input lin
+e 198.
+(pdftex.def)             Requested size: 253.01492pt x 189.70699pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 196--200
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 202--203
+
+ []
+
+<Figures/Part1_PE/Data_comparison2.png, id=63, 562.2606pt x 421.575pt>
+File: Figures/Part1_PE/Data_comparison2.png Graphic file (type png)
+
+<use Figures/Part1_PE/Data_comparison2.png>
+Package pdftex.def Info: Figures/Part1_PE/Data_comparison2.png used on input li
+ne 205.
+(pdftex.def)             Requested size: 253.01492pt x 189.70699pt.
+ [8 <./Figures/Part1_PE/Data_comparison.png (PNG copy)> <./Figures/Part1_PE/Dat
+a_comparison2.png (PNG copy)>]
+<Figures/Part2_GE/Capital_AssetHoldings.png, id=70, 562.2606pt x 421.575pt>
+File: Figures/Part2_GE/Capital_AssetHoldings.png Graphic file (type png)
+
+<use Figures/Part2_GE/Capital_AssetHoldings.png>
+Package pdftex.def Info: Figures/Part2_GE/Capital_AssetHoldings.png used on inp
+ut line 218.
+(pdftex.def)             Requested size: 281.12961pt x 210.78697pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 216--220
+
+ []
+
+<Figures/Part2_GE/Policy_func_assets.png, id=71, 562.2606pt x 421.575pt>
+File: Figures/Part2_GE/Policy_func_assets.png Graphic file (type png)
+
+<use Figures/Part2_GE/Policy_func_assets.png>
+Package pdftex.def Info: Figures/Part2_GE/Policy_func_assets.png used on input 
+line 223.
+(pdftex.def)             Requested size: 281.12961pt x 210.78697pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 221--225
+
+ []
+
+[9 <./Figures/Part2_GE/Capital_AssetHoldings.png (PNG copy)>]
+Package epstopdf Info: Source file: <Figures/Part2_GE/StationaryDist.eps>
+(epstopdf)                    date: 2019-12-05 20:20:34
+(epstopdf)                    size: 136665 bytes
+(epstopdf)             Output file: <Figures/Part2_GE/StationaryDist-eps-conver
+ted-to.pdf>
+(epstopdf)                    date: 2019-12-05 20:21:37
+(epstopdf)                    size: 137922 bytes
+(epstopdf)             Command: <repstopdf --outfile=Figures/Part2_GE/Stationar
+yDist-eps-converted-to.pdf Figures/Part2_GE/StationaryDist.eps>
+(epstopdf)             \includegraphics on input line 228.
+Package epstopdf Info: Output file is already uptodate.
+
+<Figures/Part2_GE/StationaryDist-eps-converted-to.pdf, id=77, 563.10374pt x 422
+.57875pt>
+File: Figures/Part2_GE/StationaryDist-eps-converted-to.pdf Graphic file (type p
+df)
+ <use Figures/Part2_GE/StationaryDist-eps-converted-to.pdf>
+Package pdftex.def Info: Figures/Part2_GE/StationaryDist-eps-converted-to.pdf u
+sed on input line 228.
+(pdftex.def)             Requested size: 281.55118pt x 211.28885pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 226--230
+
+ []
+
+[10 <./Figures/Part2_GE/Policy_func_assets.png (PNG copy)> <./Figures/Part2_GE/
+StationaryDist-eps-converted-to.pdf>] [11]
+Underfull \hbox (badness 10000) in paragraph at lines 302--304
+
+ []
+
+[12]
+Underfull \hbox (badness 10000) in paragraph at lines 310--312
+
+ []
+
+<Figures/Part2_UBI/Lorenz_UBI_vs_noUBI.png, id=107, 562.2606pt x 421.575pt>
+File: Figures/Part2_UBI/Lorenz_UBI_vs_noUBI.png Graphic file (type png)
+
+<use Figures/Part2_UBI/Lorenz_UBI_vs_noUBI.png>
+Package pdftex.def Info: Figures/Part2_UBI/Lorenz_UBI_vs_noUBI.png used on inpu
+t line 326.
+(pdftex.def)             Requested size: 281.12961pt x 210.78697pt.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 332.
+ [13 <./Figures/Part2_UBI/Lorenz_UBI_vs_noUBI.png (PNG copy)>] [14]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 332.
  (./ProjectMain.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 159.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 159.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 332.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 332.
 
 
 LaTeX Font Warning: Size substitutions with differences
 (Font)              up to 1.28pt have occurred.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 159.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 332.
  ) 
 Here is how much of TeX's memory you used:
- 9698 strings out of 493089
- 147221 string characters out of 6134842
- 239695 words of memory out of 5000000
- 12997 multiletter control sequences out of 15000+600000
+ 10694 strings out of 493089
+ 173213 string characters out of 6134842
+ 263515 words of memory out of 5000000
+ 13932 multiletter control sequences out of 15000+600000
  15054 words of font info for 68 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 42i,10n,40p,342b,315s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 42i,10n,46p,679b,333s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb
 ></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb>
 </usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb><
-/usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></u
-sr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr
-/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/lo
-cal/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/loc
-al/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local
-/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/t
-exlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb>
-Output written on ProjectMain.pdf (5 pages, 375314 bytes).
+/usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></u
+sr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr
+/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/l
+ocal/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/loca
+l/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/t
+exlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/te
+xlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texl
+ive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texliv
+e/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/local/texlive
+/2015/texmf-dist/fonts/type1/public/esint-type1/esint10.pfb>
+Output written on ProjectMain.pdf (14 pages, 856651 bytes).
 PDF statistics:
- 86 PDF objects out of 1000 (max. 8388607)
- 62 compressed objects within 1 object stream
- 14 named destinations out of 1000 (max. 500000)
- 31 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 170 PDF objects out of 1000 (max. 8388607)
+ 117 compressed objects within 2 object streams
+ 34 named destinations out of 1000 (max. 500000)
+ 71 words of extra memory for PDF output out of 10000 (max. 10000000)
 

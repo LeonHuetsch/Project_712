@@ -1,10 +1,9 @@
 %% Housekeeping
 
 close all
+outpath = '/Users/Leon/Desktop/PhD-Studies/2nd_Year/Courses/Macro_HetHH/Project/Tex/Figures/Part2_GE/';
+%outpath ='Output/';
 addpath('Functions')
-outpath ='Output/';
-
-
 
 
 %% Aiyagari's Parameters for Income Process and Grids
@@ -13,52 +12,50 @@ tic
 bbeta = 0.96;
 rrho = 1/bbeta - 1;
 aalpha = 0.36;
-depreciation = 0.08;
+depr = 0.08;
 A = 1;
 
 vSsigma = [1,3,5];
-vDdelta = [0.3,0.6,0.9];  % Persistence of income shock
+vDdelta = [0.0 0.3,0.6,0.9];  % Persistence of income shock
 vSsigmaY = [0.2,0.4];   % Variance of income shock    
 
-nGridAsset = 500;
+nGridAsset = 750;
 nGridShock = 21;
-vMultiSteps = [50,150,500];
+vMultiSteps = [100,750];
 
-minAsset = 0;
-maxAsset = 50;
 
 logShockAverage = 0;
 truncOpt = 0;
 
 
 
-
 %% GE for specific parameter specification
 
-ssigma = 1;
-ddelta = 0.9;
-ssigmaY = 0.2;
+ssigma = 5;
+ddelta = 0.8;
+ssigmaY = 0.4;
 
+minAsset = 0;
+maxAsset = 250;
 
 % Plot capital vs asset holdings (demand and supply)
 
-capitalDemand = @(r) (aalpha*A/(r+depreciation))^(1/(1-aalpha));
-wage = @(r) (1-aalpha)*A*(aalpha*A/(r+depreciation))^(aalpha/(1-aalpha));
+capitalDemand = @(r) (aalpha*A/(r+depr))^(1/(1-aalpha));
+wage = @(r) (1-aalpha)*A*(aalpha*A/(r+depr))^(aalpha/(1-aalpha));
 
 
-nInterest = 10;
+nInterest = 20;
 
 %vGridInterest = linspace(-depreciation+0.01,rrho-1e-08,nInterest);
 %vGridInterest = linspace(-depreciation+0.15,0.039,nInterest);
-vGridInterest = linspace(-0.01,0.06,nInterest);
+vGridInterest = linspace(-0.01,0.03,nInterest);
 vCapitalDemand = zeros(nInterest,1);
 vExpectedAssetNext = zeros(nInterest,1);
 
-[vGridAsset,vGridShock,mTransitionShock] = SetupGrids(...
-    nGridAsset,minAsset,maxAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
+[vGridAsset,vGridShock,mTransitionShock] = SetupGrids(nGridAsset,minAsset,maxAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
 
 for i=1:nInterest
-    vExpectedAssetNext(i) = SavingsFunction(vGridAsset,vMultiSteps,vGridShock,mTransitionShock,nGridShock,rrho,vGridInterest(i),aalpha,A,depreciation,ssigma,0);
+    vExpectedAssetNext(i) = SavingsFunction(vGridAsset,vMultiSteps,vGridShock,mTransitionShock,nGridShock,rrho,vGridInterest(i),aalpha,A,depr,ssigma,0);
     vCapitalDemand(i) = capitalDemand(vGridInterest(i));
 end
 
@@ -75,7 +72,6 @@ set(ax,'FontSize',14,'Fontweight','bold');
 set(tit,'Fontsize',14,'Fontweight','bold');
 set(xla,'Fontsize',14,'Fontweight','bold');
 set(le,'Fontsize',12,'Fontweight','bold');
-%print('-depsc', [outpath,'Capital_AssetHoldings','.eps']);
 
 subplot(2,1,2)
 plot(vGridInterest,vCapitalDemand-vExpectedAssetNext,'Linewidth',2);
@@ -85,12 +81,12 @@ ax=gca;
 set(ax,'FontSize',14,'Fontweight','bold');
 set(tit,'Fontsize',14,'Fontweight','bold');
 set(xla,'Fontsize',14,'Fontweight','bold');
-%print('-depsc', [outpath,'diff(r)','.eps']);
+print('-dpng', [outpath,'Capital_AssetHoldings','.png']);
 
 
 [~,initialGuess] = min(abs(vCapitalDemand-vExpectedAssetNext));
 
-findr = @(r) SavingsFunction(vGridAsset,vMultiSteps,vGridShock,mTransitionShock,nGridShock,rrho,r,aalpha,A,depreciation,ssigma,0)-capitalDemand(r);
+findr = @(r) SavingsFunction(vGridAsset,vMultiSteps,vGridShock,mTransitionShock,nGridShock,rrho,r,aalpha,A,depr,ssigma,0)-capitalDemand(r);
 [interestRateRCE,diff,exitflag] = fzero(findr,vGridInterest(initialGuess));
 
 
@@ -98,8 +94,8 @@ findr = @(r) SavingsFunction(vGridAsset,vMultiSteps,vGridShock,mTransitionShock,
 
 [vGridAsset,vGridShock,mTransitionShock] = SetupGrids(nGridAsset,minAsset,maxAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);
 
-optAccelerator = 10;
-[it,mValueFunction,mPolicyAsset,mPolicyCons] = MultigridVFI_InfHorizon(rrho,interestRateRCE,ssigma,aalpha,A,depreciation,minAsset,maxAsset,mTransitionShock,vGridShock,vMultiSteps,0,optAccelerator);
+optAccelerator = 20;
+[it,mValueFunction,mPolicyAsset,mPolicyCons] = MultigridVFI_InfHorizon(rrho,interestRateRCE,ssigma,aalpha,A,depr,minAsset,maxAsset,mTransitionShock,vGridShock,vMultiSteps,0,optAccelerator);
 
 [mStationaryDist,expectAssetHoldings] = StationaryDist(vGridAsset,nGridShock,mTransitionShock,mPolicyAsset);
 
@@ -117,7 +113,7 @@ set(ax,'FontSize',14,'Fontweight','bold');
 set(tit,'Fontsize',14,'Fontweight','bold');
 set(xla,'Fontsize',14,'Fontweight','bold');
 set(yla,'Fontsize',14,'Fontweight','bold');
-%print('-depsc', [outpath,'StationaryDist','.eps']);
+print('-depsc', [outpath,'StationaryDist','.eps']);
 
 figure;
 pl=plot(vGridAsset,mPolicyAsset(:,end));
@@ -130,7 +126,7 @@ set(ax,'FontSize',14,'Fontweight','bold');
 set(tit,'Fontsize',14,'Fontweight','bold');
 set(xla,'Fontsize',14,'Fontweight','bold');
 set(yla,'Fontsize',14,'Fontweight','bold');
-%print('-depsc', [outpath,'Policy_func_assets','.eps']);
+print('-dpng', [outpath,'Policy_func_assets','.png']);
 
 % Find assets at which policy function crosses 45 degree line
 vHelp = find(mPolicyAsset(:,end)./(1:nGridAsset)'<=1);
@@ -143,7 +139,25 @@ disp(maxAssetNecessary)
 
 %% GE for different parameter specifications
 
+% With 750 grid points
+
+% 75 for 1, 0.3, 0.2
+% 120 for 1, 0.3, 0.4
+% 120 for 1, 0.6, 0.2
+% 140 for 1, 0.6, 0.4
+% 140 for 1, 0.9, 0.2
+
+% 150 for 3, 0.6, 0.2
+% 160 for 3, 0.6, 0.4
+
+% 170 for 5, 0.3, 0.4
+% 200 for 5, 0.6, 0.4
+% 250 for 5, 0.9, 0.4
+
 tic
+
+minAsset = 0;
+maxAsset = 100;
 
 bDifference=zeros(length(vDdelta),length(vSsigma),length(vSsigmaY));
 bInterestRate=zeros(length(vDdelta),length(vSsigma),length(vSsigmaY));
@@ -152,14 +166,14 @@ bExitFlag=zeros(length(vDdelta),length(vSsigma),length(vSsigmaY));
 parfor sy=1:length(vSsigmaY)
     ssigmaY = vSsigmaY(sy);
     vSsigma = [1,3,5];
-    vDdelta = [0.6,0.75,0.9];
+    vDdelta = [0.0 0.3,0.6,0.9];
     
     mDiffHelp = zeros(length(vDdelta),length(vSsigma));
     mInterestHelp = zeros(length(vDdelta),length(vSsigma));
     mExitFlagHelp = zeros(length(vDdelta),length(vSsigma));
     
     options = optimset('fzero');
-    options.TolX = 1e-05;
+    options.TolX = 1e-08;
     
     for s=1:length(vSsigma)
     ssigma=vSsigma(s);
@@ -168,12 +182,12 @@ parfor sy=1:length(vSsigmaY)
         for d=1:length(vDdelta)
         ddelta=vDdelta(d);
 
-            capitalDemand = @(r) (aalpha*A/(r+depreciation))^(1/(1-aalpha));
+            capitalDemand = @(r) (aalpha*A/(r+depr))^(1/(1-aalpha));
             %wage = @(r) (1-aalpha)*A*(aalpha*A/(r+depreciation))^(aalpha/(1-aalpha));
     
             [vGridAsset,vGridShock,mTransitionShock] = SetupGrids(nGridAsset,minAsset,maxAsset,nGridShock,ssigmaY,ddelta,logShockAverage,truncOpt);            
 
-            findr = @(r) SavingsFunction(vGridAsset,vMultiSteps,vGridShock,mTransitionShock,nGridShock,rrho,r,aalpha,A,depreciation,ssigma,0)-capitalDemand(r);
+            findr = @(r) SavingsFunction(vGridAsset,vMultiSteps,vGridShock,mTransitionShock,nGridShock,rrho,r,aalpha,A,depr,ssigma,0)-capitalDemand(r);
             [interestRateRCE,diff,exitflag] = fzero(findr,interestRateRCE);%,options);
             
             mDiffHelp(d,s) = diff;
@@ -189,7 +203,7 @@ toc
 
 %% Save Data
 
-vRowNames={'0.3','0.6','0.9'};
+vRowNames={'0.0','0.3','0.6','0.9'};
 vColumnNames={'One','Three','Five'};
 
 
@@ -207,6 +221,8 @@ disp(tDifference2)
 disp(InterestRatesTable1)
 disp(InterestRatesTable2)
 
+writetable(InterestRatesTable1,[outpath,'Aiyagari1.csv']);
+writetable(InterestRatesTable2,[outpath,'Aiyagari2.csv']);
 
 dlmwrite([outpath,'bDifference.txt'],bDifference,'delimiter','\t','newline','pc');
 dlmwrite([outpath,'bInterestRate.txt'],bInterestRate,'delimiter','\t','newline','unix');

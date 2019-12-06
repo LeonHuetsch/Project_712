@@ -1,5 +1,5 @@
 function [mValueFunction,mPolicyAsset,mPolicyCons] = ...
-    VFI_FinHorizon(rrho,r,vGridAsset,vGridShock,mTransitionShock,nPeriod,mortOpt)
+    VFI_FinHorizon(rrho,r,ssigma,vGridAsset,vGridShock,mTransitionShock,nPeriod,mortOpt)
 
 
 nGridAsset = length(vGridAsset);
@@ -12,106 +12,175 @@ mPolicyCons = zeros(nGridAsset,nGridShock,nPeriod);
 
 
 if mortOpt == 0
-    for t=2:nPeriod
-        mContValue = mValueFunction(:,:,t-1)*mTransitionShock';
-        
-        for shockIndex=1:nGridShock
-            shockToday = vGridShock(shockIndex);
-            assetChoicePrev=1;
-            
-            %if t==2
-            %    [~,assetChoicePrev] = min(abs(vGridAsset));
-            %end
+    if ssigma==1
+        for t=2:nPeriod
+            mContValue = mValueFunction(:,:,t-1)*mTransitionShock';
 
-            for assetTodayIndex=1:nGridAsset
-                assetToday = vGridAsset(assetTodayIndex);
-                valuePrev = -10000;
-                assetChoice = 1;
-                %consChoice = -1000;
-                
-                for assetNextIndex=assetChoicePrev:nGridAsset
-                    assetNext = vGridAsset(assetNextIndex);
+            for shockIndex=1:nGridShock
+                shockToday = vGridShock(shockIndex);
+                assetChoicePrev=1;
 
-                    cons = shockToday + (1+r)*assetToday - assetNext;
-                    if cons<=0.0 
-                        value = -10000;
-                    else
-                        value = (1-bbeta)*log(cons) + bbeta*mContValue(assetNextIndex,shockIndex); 
-                    end
-                    if value>=valuePrev
-                        valuePrev = value;
-                        assetChoice = assetNextIndex;
-                        assetChoicePrev = assetNextIndex;
-                        consChoice = cons;
-                    else      
-                        break
-                    end
-                end
-                mValueFunction(assetTodayIndex,shockIndex,t) = valuePrev;
-                mPolicyAsset(assetTodayIndex,shockIndex,t) = assetChoice; 
-                mPolicyCons(assetTodayIndex,shockIndex,t) = consChoice;
-                %{
-                if t==2
-                    cons = shockToday + (1+r)*assetToday - min(abs(vGridAsset));
-                    if cons<=0.0 
-                        value = -inf;
-                    else
-                        value = (1-bbeta)*log(cons); 
-                    end
-                    [~,assetChoice] = min(abs(vGridAsset));
-                    mValueFunction(assetTodayIndex,shockIndex,t) = value;
-                    mPolicyAsset(assetTodayIndex,shockIndex,t) = assetChoice; 
-                    mPolicyCons(assetTodayIndex,shockIndex,t) = cons;  
-                end
-                %} 
-            end
-        end        
-    end	
-    mPolicyAsset(:,:,2:end) = vGridAsset(mPolicyAsset(:,:,2:end));
-    
-else
-    inpath = 'Data/';
-    vMortData = load([inpath,'survs.txt']); 
-    
-    vSurvivalProb = vMortData(end:-1:1);    
-    vEffectiveDiscout = bbeta*vSurvivalProb;
-    
-    for t=2:nPeriod
-        mContValue = mValueFunction(:,:,t-1)*mTransitionShock';
-        
-        for shockIndex=1:nGridShock
-            shockToday = vGridShock(shockIndex);
-            assetChoicePrev=1;
+                for assetTodayIndex=1:nGridAsset
+                    assetToday = vGridAsset(assetTodayIndex);
+                    valuePrev = -1000;
+                    assetChoice = 1;
+                    %consChoice = -1000;
 
-            for assetTodayIndex=1:nGridAsset
-                assetToday = vGridAsset(assetTodayIndex);
-                valuePrev = -1000;
-                assetChoice = 1;
+                        for assetNextIndex=assetChoicePrev:nGridAsset
+                            assetNext = vGridAsset(assetNextIndex);
 
-                for assetNextIndex=assetChoicePrev:nGridAsset
-                    assetNext = vGridAsset(assetNextIndex);
-
-                    cons = shockToday + (1+r)*assetToday - assetNext;
-                    if cons<=0.0 
-                        value=-1000;
-                    else
-                        value=(1-bbeta)*log(cons) + vEffectiveDiscout(t-1)*mContValue(assetNextIndex,shockIndex); 
-                    end
-                    if value>=valuePrev
-                        valuePrev = value;
-                        assetChoice = assetNextIndex;
-                        assetChoicePrev = assetNextIndex;
-                        consChoice = cons;
-                    else      
-                        break
-                    end
+                            cons = shockToday + (1+r)*assetToday - assetNext;
+                            if cons<=0.0 
+                                value = -1000;
+                            else
+                                value = log(cons) + bbeta*mContValue(assetNextIndex,shockIndex); 
+                            end
+                            if value>=valuePrev
+                                valuePrev = value;
+                                assetChoice = assetNextIndex;
+                                assetChoicePrev = assetNextIndex;
+                                consChoice = cons;
+                            else      
+                                break
+                            end
+                        end
                     mValueFunction(assetTodayIndex,shockIndex,t) = valuePrev;
                     mPolicyAsset(assetTodayIndex,shockIndex,t) = assetChoice; 
                     mPolicyCons(assetTodayIndex,shockIndex,t) = consChoice;
                 end
-            end
-        end        
-    end	
-    mPolicyAsset(:,:,2:end) = vGridAsset(mPolicyAsset(:,:,2:end));
+            end        
+        end	
+        mPolicyAsset(:,:,2:end) = vGridAsset(mPolicyAsset(:,:,2:end));
+    else
+        for t=2:nPeriod
+            mContValue = mValueFunction(:,:,t-1)*mTransitionShock';
+
+            for shockIndex=1:nGridShock
+                shockToday = vGridShock(shockIndex);
+                assetChoicePrev=1;
+
+                for assetTodayIndex=1:nGridAsset
+                    assetToday = vGridAsset(assetTodayIndex);
+                    valuePrev = -1000;
+                    assetChoice = 1;
+                    %consChoice = -1000;
+
+                        for assetNextIndex=assetChoicePrev:nGridAsset
+                            assetNext = vGridAsset(assetNextIndex);
+
+                            cons = shockToday + (1+r)*assetToday - assetNext;
+                            if cons<=0.0 
+                                value = -1000;
+                            else
+                                value = (cons^(1-ssigma)-1)/(1-ssigma) + bbeta*mContValue(assetNextIndex,shockIndex); 
+                            end
+                            if value>=valuePrev
+                                valuePrev = value;
+                                assetChoice = assetNextIndex;
+                                assetChoicePrev = assetNextIndex;
+                                consChoice = cons;
+                            else      
+                                break
+                            end
+                        end
+                    mValueFunction(assetTodayIndex,shockIndex,t) = valuePrev;
+                    mPolicyAsset(assetTodayIndex,shockIndex,t) = assetChoice; 
+                    mPolicyCons(assetTodayIndex,shockIndex,t) = consChoice;
+                end
+            end        
+        end	
+        mPolicyAsset(:,:,2:end) = vGridAsset(mPolicyAsset(:,:,2:end));
+    end
+  
+else
+    if ssigma==1
+        inpath = 'Data/';
+        vMortData = load([inpath,'survs.txt']); 
+
+        vSurvivalProb = vMortData(end:-1:1);    
+        vEffectiveDiscout = bbeta*vSurvivalProb;
+
+        for t=2:nPeriod
+            mContValue = mValueFunction(:,:,t-1)*mTransitionShock';
+
+            for shockIndex=1:nGridShock
+                shockToday = vGridShock(shockIndex);
+                assetChoicePrev=1;
+
+                for assetTodayIndex=1:nGridAsset
+                    assetToday = vGridAsset(assetTodayIndex);
+                    valuePrev = -1000;
+                    assetChoice = 1;
+
+                    for assetNextIndex=assetChoicePrev:nGridAsset
+                        assetNext = vGridAsset(assetNextIndex);
+
+                        cons = shockToday + (1+r)*assetToday - assetNext;
+                        if cons<=0.0 
+                            value=-1000;
+                        else
+                            value = log(cons) + vEffectiveDiscout(t-1)*mContValue(assetNextIndex,shockIndex); 
+                        end
+                        if value>=valuePrev
+                            valuePrev = value;
+                            assetChoice = assetNextIndex;
+                            assetChoicePrev = assetNextIndex;
+                            consChoice = cons;
+                        else      
+                            break
+                        end
+                        mValueFunction(assetTodayIndex,shockIndex,t) = valuePrev;
+                        mPolicyAsset(assetTodayIndex,shockIndex,t) = assetChoice; 
+                        mPolicyCons(assetTodayIndex,shockIndex,t) = consChoice;
+                    end
+                end
+            end        
+        end	
+        mPolicyAsset(:,:,2:end) = vGridAsset(mPolicyAsset(:,:,2:end));
+    else
+        inpath = 'Data/';
+        vMortData = load([inpath,'survs.txt']); 
+
+        vSurvivalProb = vMortData(end:-1:1);    
+        vEffectiveDiscout = bbeta*vSurvivalProb;
+
+        for t=2:nPeriod
+            mContValue = mValueFunction(:,:,t-1)*mTransitionShock';
+
+            for shockIndex=1:nGridShock
+                shockToday = vGridShock(shockIndex);
+                assetChoicePrev=1;
+
+                for assetTodayIndex=1:nGridAsset
+                    assetToday = vGridAsset(assetTodayIndex);
+                    valuePrev = -1000;
+                    assetChoice = 1;
+
+                    for assetNextIndex=assetChoicePrev:nGridAsset
+                        assetNext = vGridAsset(assetNextIndex);
+
+                        cons = shockToday + (1+r)*assetToday - assetNext;
+                        if cons<=0.0 
+                            value=-1000;
+                        else
+                            value = (cons^(1-ssigma)-1)/(1-ssigma) + vEffectiveDiscout(t-1)*mContValue(assetNextIndex,shockIndex); 
+                        end
+                        if value>=valuePrev
+                            valuePrev = value;
+                            assetChoice = assetNextIndex;
+                            assetChoicePrev = assetNextIndex;
+                            consChoice = cons;
+                        else      
+                            break
+                        end
+                        mValueFunction(assetTodayIndex,shockIndex,t) = valuePrev;
+                        mPolicyAsset(assetTodayIndex,shockIndex,t) = assetChoice; 
+                        mPolicyCons(assetTodayIndex,shockIndex,t) = consChoice;
+                    end
+                end
+            end        
+        end	
+        mPolicyAsset(:,:,2:end) = vGridAsset(mPolicyAsset(:,:,2:end));
+    end
 end
 end

@@ -46,8 +46,9 @@ if truncOpt == 0
     
     %vGridAsset = exp(linspace(log(0.01),log(maxGridAsset),nGridAsset));
     vGridAsset = linspace(minGridAsset,maxGridAsset,nGridAsset);
-    
-    
+    %vGridAsset = (linspace(sqrt(minGridAsset),sqrt(maxGridAsset),nGridAsset)).^2;
+    %vGridAsset = (linspace(sign(minGridAsset)*sqrt(abs(minGridAsset)),sqrt(maxGridAsset),nGridAsset));
+    %vGridAsset = sign(vGridAsset).*vGridAsset.^2;
 else
     
     truncValue = abs(truncOpt);
@@ -81,5 +82,7 @@ else
     
     %vGridAsset = exp(linspace(log(minGridAsset),log(maxGridAsset),nGridAsset));
     vGridAsset = linspace(minGridAsset,maxGridAsset,nGridAsset);    
+    %vGridAsset = (linspace(sign(minGridAsset)*sqrt(abs(minGridAsset)),sqrt(maxGridAsset),nGridAsset));
+    %vGridAsset = sign(vGridAsset).*vGridAsset.^2;
 end
 end
